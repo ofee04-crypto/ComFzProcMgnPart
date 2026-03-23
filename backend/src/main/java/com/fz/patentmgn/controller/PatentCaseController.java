@@ -30,9 +30,15 @@ public class PatentCaseController {
     }
 
     @GetMapping
-    public String index(@RequestParam(required = false) String keyword, Model model, HttpSession session) {
-        model.addAttribute("cases", service.search(keyword));
+    public String index(
+            @RequestParam(required = false) String keyword, 
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd") java.time.LocalDate startDate,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd") java.time.LocalDate endDate,
+            Model model, HttpSession session) {
+        model.addAttribute("cases", service.search(keyword, startDate, endDate));
         model.addAttribute("keyword", keyword);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
         model.addAttribute("username", session.getAttribute("loggedInUser"));
         return "index";
     }
