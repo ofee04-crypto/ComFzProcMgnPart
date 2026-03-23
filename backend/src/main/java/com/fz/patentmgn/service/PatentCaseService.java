@@ -53,34 +53,38 @@ public class PatentCaseService {
     }
 
     public List<Map<String, Object>> getOverviewGroupedByName() {
-        // 分組前先過濾掉沒有申請名稱的資料
+        // 分組前先過濾掉沒有合約編號的資料
         Map<String, List<PatentCase>> grouped = repository.findAll().stream()
-                .filter(c -> c.getAppName() != null && !c.getAppName().trim().isEmpty())
-                .collect(Collectors.groupingBy(PatentCase::getAppName));
+                .filter(c -> c.getContractNo() != null && !c.getContractNo().trim().isEmpty())
+                .collect(Collectors.groupingBy(PatentCase::getContractNo));
 
         return grouped.entrySet().stream()
                 .map(entry -> {
-                    String appName = entry.getKey();
+                    String contractNo = entry.getKey();
                     List<PatentCase> cases = entry.getValue();
 
-                    BigDecimal sumContractHours = cases.stream()
-                            .map(c -> c.getTotalContractHours() != null ? c.getTotalContractHours() : BigDecimal.ZERO)
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    String appName = cases.get(0).getAppName();
+                    BigDecimal contractAmount = cases.get(0).getContractAmount() != null ? cases.get(0).getContractAmount() : BigDecimal.ZERO;
 
                     BigDecimal sumActualHours = cases.stream()
                             .map(c -> c.getActualHours() != null ? c.getActualHours() : BigDecimal.ZERO)
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-                    BigDecimal sumContractAmount = cases.stream()
-                            .map(c -> c.getContractAmount() != null ? c.getContractAmount() : BigDecimal.ZERO)
+                    BigDecimal sumTotalFee = cases.stream()
+                            .map(c -> c.getTotalFee() != null ? c.getTotalFee() : BigDecimal.ZERO)
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
+                            
+                    BigDecimal contractBalance = contractAmount.subtract(sumTotalFee);
 
                     Map<String, Object> map = new java.util.HashMap<>();
+                    map.put("contractNo", contractNo);
                     map.put("appName", appName);
                     map.put("count", cases.size());
-                    map.put("totalContractHours", sumContractHours);
+                    map.put("contractAmount", contractAmount);
+                    map.put("contractBalance", contractBalance);
                     map.put("totalActualHours", sumActualHours);
-                    map.put("totalContractAmount", sumContractAmount);
+                    map.put("totalFee", sumTotalFee);
+                    
                     return map;
                 })
                 .collect(Collectors.toList());
