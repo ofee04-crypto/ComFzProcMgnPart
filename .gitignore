@@ -1,0 +1,97 @@
+# =====================================
+# 1. 系統與作業系統暫存檔
+# =====================================
+.DS_Store
+Thumbs.db
+
+# =====================================
+# 2. IDE 相關設定 (Eclipse, IntelliJ IDEA, VS Code)
+# =====================================
+# Eclipse
+**/.metadata/
+**/.recommenders/
+**/.settings/
+**/.classpath
+**/.project
+**/.factorypath
+
+# IntelliJ IDEA
+**/.idea/
+**/*.iml
+**/*.ipr
+**/*.iws
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+*.code-workspace
+
+# =====================================
+# 3. 前端開發區 (Frontend - Vue/Node)
+# =====================================
+# 依賴模組與打包輸出
+node_modules/
+frontend/dist/
+**/coverage/
+
+# 前端日誌與暫存
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/.eslintcache
+
+# 環境變數與設定 (避免洩漏敏感資訊)
+**/.env
+**/.env.local
+**/.env.*.local
+config.js
+
+# =====================================
+# 4. 後端開發區 (Backend - Spring Boot)
+# =====================================
+# 建置與編譯輸出
+**/target/
+**/*.class
+
+# 後端日誌
+*.log
+
+# Spring Initializr 說明檔
+**/HELP.md
+
+# 敏感或環境專屬設定檔
+**/application.yml
+**/application.properties
+**/application-local.yml
+
+# Coze SDK 本地託管（需手動下載）
+backend/src/main/resources/static/vendor/coze/index.js
+
+# =====================================
+# 5. AI 開發與工作流程產生檔案
+# =====================================
+# AI 輸出目錄
+AI_good/
+**/AI_good/
+
+# Repomix (AI Context Tool Output)
+repomix-output.json
+repomix-output.xml
+repomix-output.txt
+repomix-output.md
+
+# AI Assistant / Agent 資料夾
+.agent/
+
+# XML 檔案排除 (保留 Maven 設定檔)
+*.xml
+!pom.xml
+!**/pom.xml
+
+# =====================================
+# 6. 特殊保留檔案
+# =====================================
+!**/.gitkeep
