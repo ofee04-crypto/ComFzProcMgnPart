@@ -203,4 +203,9 @@
   "username" : "accountant",
   "action" : "使用者登入",
   "timestamp" : [ 2026, 3, 23, 16, 16, 9, 321958000 ]
+}, {
+  "id" : "1d73999e-9a8b-4f12-9854-df51cc6d7a81",
+  "username" : "accountant",
+  "action" : "建立新案件: EVT-1774255819437",
+  "timestamp" : [ 2026, 3, 23, 16, 50, 19, 508900900 ]
 } ]
