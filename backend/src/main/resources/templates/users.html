@@ -1,43 +1,213 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/nav :: head('帳號管理')}"></head>
-<body>
-<div th:replace="~{fragments/nav :: navbar}"></div>
+  <head th:replace="~{fragments/nav :: head('帳號管理')}"></head>
+  <body class="bg-light">
+    <div th:replace="~{fragments/nav :: navbar}"></div>
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>帳號管理 (僅限管理員)</h2>
-        <a class="btn btn-primary" href="/users/create">新增帳號</a>
+    <div class="container mt-5 mb-5">
+      <!-- Header Section -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="fw-bold mb-1" style="color: #2c3e50">帳號管理</h2>
+          <p class="text-muted mb-0">
+            僅限管理員權限存取，可進行系統使用者的新增與權限設定
+          </p>
+        </div>
+        <a
+          class="btn btn-primary shadow-sm px-4 py-2 fw-bold"
+          href="/users/create"
+          style="border-radius: 8px"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            fill="currentColor"
+            class="bi bi-person-plus-fill me-2 mb-1"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
+            />
+            <path
+              fill-rule="evenodd"
+              d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"
+            />
+          </svg>
+          新增帳號
+        </a>
+      </div>
+
+      <!-- Alerts -->
+      <div
+        th:if="${message}"
+        class="alert alert-success alert-dismissible fade show shadow-sm"
+        role="alert"
+        style="border-left: 5px solid #198754"
+      >
+        <strong th:text="${message}"></strong>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div
+        th:if="${error}"
+        class="alert alert-danger alert-dismissible fade show shadow-sm"
+        role="alert"
+        style="border-left: 5px solid #dc3545"
+      >
+        <strong th:text="${error}"></strong>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Main Card -->
+      <div
+        class="card shadow-sm border-0"
+        style="border-radius: 12px; overflow: hidden"
+      >
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead style="background-color: #f8f9fa">
+              <tr>
+                <th
+                  class="text-center py-3 text-secondary border-bottom-0"
+                  style="width: 15rem"
+                >
+                  操作選項
+                </th>
+                <th class="py-3 text-secondary border-bottom-0">
+                  系統角色 (Role)
+                </th>
+                <th class="ps-4 py-3 text-secondary border-bottom-0">
+                  帳號名稱 (Username)
+                </th>
+                <th class="py-3 text-secondary border-bottom-0">
+                  登入密碼 (Password)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="border-top-0">
+              <tr th:each="u : ${users}">
+                </td>
+                <td class="text-center py-3">
+                  <a
+                    class="btn btn-sm btn-outline-primary px-3 fw-bold me-2"
+                    th:href="@{/users/edit/{username}(username=${u.username})}"
+                    style="border-radius: 6px"
+                    >編輯</a
+                  >
+                  <form
+                    th:action="@{/users/delete/{username}(username=${u.username})}"
+                    method="post"
+                    style="display: inline"
+                    th:if="${u.username != 'admin'}"
+                  >
+                    <button
+                      type="submit"
+                      class="btn btn-sm btn-outline-danger px-3 fw-bold"
+                      onclick="
+                        return confirm(
+                          '警告：確定要永久刪除該帳號及其權限嗎？',
+                        );
+                      "
+                      style="border-radius: 6px"
+                    >
+                      刪除
+                    </button>
+                  </form>
+                </td>
+                <td class="py-3">
+                  <span
+                    class="badge bg-danger shadow-sm px-3 py-2"
+                    th:if="${u.role == 'ADMIN'}"
+                    style="border-radius: 6px; letter-spacing: 0.5px"
+                    >最高權限 (ADMIN)</span
+                  >
+                  <span
+                    class="badge bg-info text-dark shadow-sm px-3 py-2"
+                    th:if="${u.role == 'MGN'}"
+                    style="border-radius: 6px; letter-spacing: 0.5px"
+                    >管理員 (MGN)</span
+                  >
+                  <span
+                    class="badge bg-secondary shadow-sm px-3 py-2"
+                    th:if="${u.role != 'ADMIN' and u.role != 'MGN'}"
+                    th:text="${u.role}"
+                    style="border-radius: 6px; letter-spacing: 0.5px"
+                    >ROLE</span
+                  >
+                </td>
+                <td class="ps-4 py-3">
+                  <div class="d-flex align-items-center">
+                    <div
+                      class="bg-primary bg-gradient text-white d-flex align-items-center justify-content-center me-3 shadow-sm fw-bold"
+                      style="
+                        width: 42px;
+                        height: 42px;
+                        font-size: 1.2rem;
+                        border-radius: 10px;
+                      "
+                      th:text="${#strings.substring(u.username,0,1).toUpperCase()}"
+                    >
+                      U
+                    </div>
+                    <div>
+                      <h6
+                        class="mb-0 fw-bold text-dark"
+                        th:text="${u.username}"
+                      >
+                        Username
+                      </h6>
+                      <small class="text-muted">內部使用者</small>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3">
+                  <span
+                    class="badge bg-light text-dark border border-secondary fw-bold px-3 py-2"
+                    style="
+                      font-family: monospace;
+                      font-size: 0.95rem;
+                      border-radius: 6px;
+                    "
+                    th:text="${u.password}"
+                    >password</span
+                  >
+              </tr>
+              <tr th:if="${#lists.isEmpty(users)}">
+                <td colspan="4" class="text-center py-5 text-muted">
+                  <div class="mb-3 mt-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="48"
+                      height="48"
+                      fill="currentColor"
+                      class="bi bi-people text-secondary opacity-50"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"
+                      />
+                    </svg>
+                  </div>
+                  <h5 class="mb-0 fw-bold">目前無帳號資料</h5>
+                  <p class="mb-0 mt-1">系統中目前尚未建立任何使用者帳號</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-
-    <table class="table table-bordered table-hover mt-3">
-        <thead class="table-dark">
-        <tr>
-            <th>帳號 (Username)</th>
-            <th>角色 (Role)</th>
-            <th>密碼 (Password)</th>
-            <th class="text-center" style="width: 15rem;">操作</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="u : ${users}">
-            <td th:text="${u.username}"></td>
-            <td th:text="${u.role}"></td>
-            <td class="text-muted">顯示為明文以免忘記: <br/><strong th:text="${u.password}"></strong></td>
-            <td class="text-center align-middle">
-                <a class="btn btn-sm btn-outline-primary me-2" th:href="@{/users/edit/{username}(username=${u.username})}">編輯</a>
-                <form th:action="@{/users/delete/{username}(username=${u.username})}" method="post" style="display:inline;" th:if="${u.username != 'admin'}">
-                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('確定要刪除該帳號嗎？');">刪除</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>
