@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/nav :: head('系統操作紀錄')}"></head>
+<body>
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="container mt-4">
+    <h2 class="mb-4">系統操作紀錄</h2>
+    
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="table-dark">
+            <tr>
+                <th style="width: 25%;">時間</th>
+                <th style="width: 25%;">操作人員</th>
+                <th style="width: 50%;">操作動作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="log : ${logs}">
+                <td th:text="${#temporals.format(log.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${log.username}"></td>
+                <td th:text="${log.action}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(logs)}">
+                <td colspan="3" class="text-center">目前無操作紀錄</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

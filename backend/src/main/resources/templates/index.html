@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/nav :: head('案件調閱與搜尋')}"></head>
+<body>
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="container mt-4">
+    <h2 class="mb-4">案件調閱與搜尋</h2>
+    
+    <div th:if="${message}" class="alert alert-success mt-3" th:text="${message}"></div>
+
+    <form method="get" action="/" class="row g-3 mb-4">
+        <div class="col-auto">
+            <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="輸入關鍵字...">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">搜尋</button>
+            <a href="/" class="btn btn-secondary mb-3">清除</a>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+            <tr>
+                <th>事件編號</th>
+                <th>合約編號</th>
+                <th>申請人</th>
+                <th>申請名稱</th>
+                <th>案件/檔案編號</th>
+                <th>承辦人</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="case : ${cases}">
+                <td th:text="${case.eventNo}"></td>
+                <td th:text="${case.contractNo}"></td>
+                <td th:text="${case.applicant}"></td>
+                <td th:text="${case.appName}"></td>
+                <td th:text="${case.caseFileNo}"></td>
+                <td th:text="${case.assignee}"></td>
+                <td>
+                    <a th:href="@{/edit/{id}(id=${case.eventNo})}" class="btn btn-sm btn-outline-primary">編輯</a>
+                    <form th:action="@{/delete/{id}(id=${case.eventNo})}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('確定刪除？')">刪除</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(cases)}">
+                <td colspan="7" class="text-center">目前無案件資料</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

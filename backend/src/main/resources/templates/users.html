@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/nav :: head('帳號管理')}"></head>
+<body>
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>帳號管理 (僅限管理員)</h2>
+        <a class="btn btn-primary" href="/users/create">新增帳號</a>
+    </div>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <table class="table table-bordered table-hover mt-3">
+        <thead class="table-dark">
+        <tr>
+            <th>帳號 (Username)</th>
+            <th>角色 (Role)</th>
+            <th>密碼 (Password)</th>
+            <th class="text-center" style="width: 15rem;">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${users}">
+            <td th:text="${u.username}"></td>
+            <td th:text="${u.role}"></td>
+            <td class="text-muted">顯示為明文以免忘記: <br/><strong th:text="${u.password}"></strong></td>
+            <td class="text-center align-middle">
+                <a class="btn btn-sm btn-outline-primary me-2" th:href="@{/users/edit/{username}(username=${u.username})}">編輯</a>
+                <form th:action="@{/users/delete/{username}(username=${u.username})}" method="post" style="display:inline;" th:if="${u.username != 'admin'}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('確定要刪除該帳號嗎？');">刪除</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

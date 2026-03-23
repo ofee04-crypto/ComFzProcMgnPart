@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/nav :: head('新增/編輯帳號')}"></head>
+<body>
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="container mt-4">
+    <h2 class="mb-4" th:text="${isEdit ? '編輯帳號' : '新增帳號'}"></h2>
+
+    <form th:action="@{/users/save}" method="post" th:object="${user}" class="card p-4 shadow-sm">
+        
+        <div class="mb-3">
+            <label class="form-label fw-bold">帳號 (Username)</label>
+            <input type="text" class="form-control" th:field="*{username}" required th:readonly="${isEdit}">
+            <div class="form-text" th:if="${isEdit}">帳號名稱無法修改</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">密碼 (Password)</label>
+            <input type="text" class="form-control" th:field="*{password}" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-bold">角色 (Role)</label>
+            <select class="form-select" th:field="*{role}">
+                <option value="USER">一般使用者 (USER)</option>
+                <option value="MGN">管理人員 (MGN)</option>
+                <option value="ADMIN">系統管理員 (ADMIN)</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <a href="/users" class="btn btn-secondary me-2">取消 返回</a>
+            <button type="submit" class="btn btn-primary">儲存帳號</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

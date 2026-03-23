@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/nav :: head('同名案件加總')}"></head>
+<body>
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="container mt-4">
+    <h2 class="mb-4">同名案件總覽</h2>
+    
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover mt-3">
+            <thead class="table-info">
+            <tr>
+                <th>申請名稱</th>
+                <th>關聯案件數</th>
+                <th>累計合約數量(Sum)</th>
+                <th>累計實際花費時數(Sum)</th>
+                <th>累計合約金額(Sum)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="stat : ${groupedStats}">
+                <td th:text="${stat.appName}"></td>
+                <td th:text="${stat.count}"></td>
+                <td th:text="${stat.totalContractHours}"></td>
+                <td th:text="${stat.totalActualHours}"></td>
+                <td th:text="${stat.totalContractAmount}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(groupedStats)}">
+                <td colspan="5" class="text-center">目前無案件資料可供彙整</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

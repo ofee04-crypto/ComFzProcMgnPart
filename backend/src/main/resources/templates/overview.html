@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/nav :: head('案件總覽')}"></head>
+<body>
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="container-fluid mt-4 px-4">
+    <h2 class="mb-4">全案件總覽</h2>
+    
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover mt-3" style="min-width: 1500px;">
+            <thead class="table-dark">
+            <tr>
+                <th>事件編號</th>
+                <th>合約編號</th>
+                <th>申請人</th>
+                <th>申請名稱</th>
+                <th>合約總時數</th>
+                <th>事件發生日</th>
+                <th>承辦人</th>
+                <th>任務名稱</th>
+                <th>實際時數</th>
+                <th>結餘時數</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="case : ${cases}">
+                <td th:text="${case.eventNo}"></td>
+                <td th:text="${case.contractNo}"></td>
+                <td th:text="${case.applicant}"></td>
+                <td th:text="${case.appName}"></td>
+                <td th:text="${case.totalContractHours}"></td>
+                <td th:text="${case.eventDate}"></td>
+                <td th:text="${case.assignee}"></td>
+                <td th:text="${case.taskName}"></td>
+                <td th:text="${case.actualHours}"></td>
+                <td th:text="${case.remainingHours}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(cases)}">
+                <td colspan="10" class="text-center">目前無案件資料</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
