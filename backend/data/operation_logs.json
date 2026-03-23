@@ -103,4 +103,34 @@
   "username" : "accountant",
   "action" : "使用者登入",
   "timestamp" : [ 2026, 3, 23, 14, 11, 40, 597802400 ]
+}, {
+  "id" : "2341c437-9ba3-4a27-a4c3-3207c28f453a",
+  "username" : "accountant",
+  "action" : "使用者登入",
+  "timestamp" : [ 2026, 3, 23, 14, 18, 31, 790891700 ]
+}, {
+  "id" : "407ef5e1-596a-4574-939f-3610a3087d3e",
+  "username" : "accountant",
+  "action" : "更新案件: EVT-1774244262017",
+  "timestamp" : [ 2026, 3, 23, 14, 32, 4, 540355700 ]
+}, {
+  "id" : "de467b2d-d49d-466e-9fde-5af8d286ea8d",
+  "username" : "accountant",
+  "action" : "更新案件: EVT-1774244262017",
+  "timestamp" : [ 2026, 3, 23, 14, 32, 30, 730574400 ]
+}, {
+  "id" : "c9d50bb7-5003-4eda-a914-1d3e143c2b55",
+  "username" : "accountant",
+  "action" : "關閉地端系統",
+  "timestamp" : [ 2026, 3, 23, 14, 54, 55, 951525500 ]
+}, {
+  "id" : "bc0a98a8-cf69-4f1e-89cf-c5da6f369a89",
+  "username" : "accountant",
+  "action" : "使用者登入",
+  "timestamp" : [ 2026, 3, 23, 14, 55, 33, 617757400 ]
+}, {
+  "id" : "c4cb12a5-073a-46cb-9c1f-0d19411b955c",
+  "username" : "accountant",
+  "action" : "建立新案件: EVT-1774249115063",
+  "timestamp" : [ 2026, 3, 23, 14, 58, 35, 80561900 ]
 } ]

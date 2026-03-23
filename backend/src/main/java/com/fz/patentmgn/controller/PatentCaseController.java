@@ -18,13 +18,15 @@ public class PatentCaseController {
 
     private final PatentCaseService service;
     private final LogService logService;
+    private final com.fasterxml.jackson.databind.ObjectMapper objectMapper;
     
     @Autowired
     private ApplicationContext context;
 
-    public PatentCaseController(PatentCaseService service, LogService logService) {
+    public PatentCaseController(PatentCaseService service, LogService logService, com.fasterxml.jackson.databind.ObjectMapper objectMapper) {
         this.service = service;
         this.logService = logService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping
@@ -40,6 +42,20 @@ public class PatentCaseController {
         model.addAttribute("patentCase", new PatentCase());
         model.addAttribute("isEdit", false);
         model.addAttribute("username", session.getAttribute("loggedInUser"));
+        
+        try {
+            java.util.Map<String, PatentCase> uniqueContracts = new java.util.HashMap<>();
+            for (PatentCase pc : service.getAllCases()) {
+                if (pc.getContractNo() != null && !pc.getContractNo().trim().isEmpty()) {
+                    uniqueContracts.put(pc.getContractNo(), pc);
+                }
+            }
+            String contractsJson = objectMapper.writeValueAsString(uniqueContracts);
+            model.addAttribute("contractsJson", contractsJson);
+        } catch (Exception e) {
+            model.addAttribute("contractsJson", "{}");
+        }
+        
         return "form";
     }
 
@@ -51,6 +67,15 @@ public class PatentCaseController {
             patentCase.setEventNo("EVT-" + System.currentTimeMillis());
             isNew = true;
         }
+
+        // Auto-calculate hourly rate: ContractAmount / TotalContractHours (rounded to 1 decimal point)
+        if (patentCase.getContractAmount() != null && patentCase.getTotalContractHours() != null
+                && patentCase.getTotalContractHours().compareTo(java.math.BigDecimal.ZERO) != 0) {
+            java.math.BigDecimal rate = patentCase.getContractAmount()
+                    .divide(patentCase.getTotalContractHours(), 1, java.math.RoundingMode.HALF_UP);
+            patentCase.setHourlyRate(rate);
+        }
+
         service.saveCase(patentCase);
         
         if (isNew) {
