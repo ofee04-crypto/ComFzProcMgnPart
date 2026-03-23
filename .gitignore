@@ -42,7 +42,7 @@ frontend/dist/
 **/yarn-debug.log*
 **/yarn-error.log*
 **/.eslintcache
-**/data/
+**/data/*
 
 # 環境變數與設定 (避免洩漏敏感資訊)
 **/.env
@@ -68,24 +68,7 @@ config.js
 **/application.properties
 **/application-local.yml
 
-# Coze SDK 本地託管（需手動下載）
-backend/src/main/resources/static/vendor/coze/index.js
 
-# =====================================
-# 5. AI 開發與工作流程產生檔案
-# =====================================
-# AI 輸出目錄
-AI_good/
-**/AI_good/
-
-# Repomix (AI Context Tool Output)
-repomix-output.json
-repomix-output.xml
-repomix-output.txt
-repomix-output.md
-
-# AI Assistant / Agent 資料夾
-.agent/
 
 # XML 檔案排除 (保留 Maven 設定檔)
 *.xml
