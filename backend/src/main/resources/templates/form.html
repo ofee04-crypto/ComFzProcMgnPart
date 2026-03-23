@@ -1,119 +1,157 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/nav :: head('新增/編輯案件')}"></head>
+<head th:replace="~{fragments/nav :: head('案件詳細資料')}"></head>
 <body>
 <div th:replace="~{fragments/nav :: navbar}"></div>
 
 <div class="container mt-4 mb-5">
-    <h2 class="mb-4" th:text="${isEdit ? '編輯案件' : '新增案件'}">新增案件</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 th:text="${isEdit ? '案件詳細資料' : '新增案件'}">案件詳細資料</h2>
+        <!-- 只有在編輯模式下才顯示解除鎖定的編輯按鈕 -->
+        <button type="button" class="btn btn-warning fw-bold" th:if="${isEdit}" id="editBtn" onclick="enableEdit()">編輯</button>
+    </div>
     
-    <form th:action="@{/save}" th:object="${patentCase}" method="post" class="row g-3">
+    <form th:action="@{/save}" th:object="${patentCase}" method="post" class="row g-3" id="caseForm">
         <input type="hidden" th:field="*{eventNo}" />
         
         <div class="col-md-4">
-            <label class="form-label">合約編號</label>
-            <input type="text" class="form-control" th:field="*{contractNo}">
+            <label class="form-label fw-bold">合約編號</label>
+            <input type="text" class="form-control lockable" th:field="*{contractNo}">
         </div>
         <div class="col-md-4">
-            <label class="form-label">申請人</label>
-            <input type="text" class="form-control" th:field="*{applicant}">
+            <label class="form-label fw-bold">申請人</label>
+            <input type="text" class="form-control lockable" th:field="*{applicant}">
         </div>
         <div class="col-md-4">
-            <label class="form-label">承辦人</label>
-            <input type="text" class="form-control" th:field="*{assignee}">
+            <label class="form-label fw-bold">承辦人</label>
+            <input type="text" class="form-control lockable" th:field="*{assignee}">
         </div>
         
         <div class="col-md-6">
-            <label class="form-label">申請名稱</label>
-            <input type="text" class="form-control" th:field="*{appName}" required>
+            <label class="form-label fw-bold text-danger">申請名稱 (必填)</label>
+            <input type="text" class="form-control lockable border-danger-subtle" th:field="*{appName}" required>
         </div>
         <div class="col-md-6">
-            <label class="form-label">案件/檔案編號</label>
-            <input type="text" class="form-control" th:field="*{caseFileNo}">
+            <label class="form-label fw-bold">案件/檔案編號</label>
+            <input type="text" class="form-control lockable" th:field="*{caseFileNo}">
         </div>
 
         <div class="col-md-6">
-            <label class="form-label">申請案名稱(英)</label>
-            <input type="text" class="form-control" th:field="*{appNameEn}">
+            <label class="form-label fw-bold">申請案名稱(英)</label>
+            <input type="text" class="form-control lockable" th:field="*{appNameEn}">
         </div>
         <div class="col-md-6">
-            <label class="form-label">案件原文名稱</label>
-            <input type="text" class="form-control" th:field="*{originalCaseName}">
+            <label class="form-label fw-bold">案件原文名稱</label>
+            <input type="text" class="form-control lockable" th:field="*{originalCaseName}">
         </div>
 
         <div class="col-md-12">
-            <label class="form-label">合約備註</label>
-            <textarea class="form-control" th:field="*{contractNotes}" rows="2"></textarea>
+            <label class="form-label fw-bold">合約備註</label>
+            <textarea class="form-control lockable" th:field="*{contractNotes}" rows="2"></textarea>
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">合約金額</label>
-            <input type="number" step="0.01" class="form-control" th:field="*{contractAmount}">
+            <label class="form-label fw-bold">合約金額</label>
+            <input type="number" step="0.01" class="form-control lockable" th:field="*{contractAmount}">
         </div>
         <div class="col-md-4">
-            <label class="form-label">合約總時數</label>
-            <input type="number" step="0.01" class="form-control" th:field="*{totalContractHours}">
+            <label class="form-label fw-bold">合約總時數</label>
+            <input type="number" step="0.01" class="form-control lockable" th:field="*{totalContractHours}">
         </div>
         <div class="col-md-4">
-            <label class="form-label">小時費用</label>
-            <input type="number" step="0.01" class="form-control" th:field="*{hourlyRate}">
+            <label class="form-label fw-bold">小時費用</label>
+            <input type="number" step="0.01" class="form-control lockable" th:field="*{hourlyRate}">
         </div>
 
+        <hr class="mt-5 mb-4 border-secondary">
+
         <div class="col-md-4">
-            <label class="form-label">事件發生日</label>
-            <input type="date" class="form-control" th:field="*{eventDate}">
+            <label class="form-label fw-bold">事件發生日</label>
+            <input type="date" class="form-control lockable" th:field="*{eventDate}">
         </div>
         <div class="col-md-8">
-            <label class="form-label">事件內容</label>
-            <input type="text" class="form-control" th:field="*{eventContent}">
+            <label class="form-label fw-bold">事件內容</label>
+            <input type="text" class="form-control lockable" th:field="*{eventContent}">
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">委派日期</label>
-            <input type="date" class="form-control" th:field="*{assignmentDate}">
+            <label class="form-label fw-bold">委派日期</label>
+            <input type="date" class="form-control lockable" th:field="*{assignmentDate}">
         </div>
         <div class="col-md-4">
-            <label class="form-label">預計完成日</label>
-            <input type="date" class="form-control" th:field="*{expectedCompletionDate}">
+            <label class="form-label fw-bold text-primary">預計完成日</label>
+            <input type="date" class="form-control lockable border-primary-subtle" th:field="*{expectedCompletionDate}">
         </div>
         <div class="col-md-4">
-            <label class="form-label">實際完成日 / 完成日期</label>
-            <input type="date" class="form-control" th:field="*{actualCompletionDate}">
+            <label class="form-label fw-bold text-success">實際完成日</label>
+            <input type="date" class="form-control lockable border-success-subtle" th:field="*{actualCompletionDate}">
         </div>
 
         <div class="col-md-6">
-            <label class="form-label">任務名稱</label>
-            <input type="text" class="form-control" th:field="*{taskName}">
+            <label class="form-label fw-bold">任務名稱</label>
+            <input type="text" class="form-control lockable" th:field="*{taskName}">
         </div>
         <div class="col-md-6">
-            <label class="form-label">工作項目簡述</label>
-            <input type="text" class="form-control" th:field="*{taskDescription}">
+            <label class="form-label fw-bold">工作項目簡述</label>
+            <input type="text" class="form-control lockable" th:field="*{taskDescription}">
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">預計使用時數</label>
-            <input type="number" step="0.01" class="form-control" th:field="*{expectedHours}">
+            <label class="form-label fw-bold">預計使用時數</label>
+            <input type="number" step="0.01" class="form-control lockable" th:field="*{expectedHours}">
         </div>
         <div class="col-md-4">
-            <label class="form-label">實際使用時數</label>
-            <input type="number" step="0.01" class="form-control" th:field="*{actualHours}">
+            <label class="form-label fw-bold">實際使用時數</label>
+            <input type="number" step="0.01" class="form-control lockable" th:field="*{actualHours}">
         </div>
         <div class="col-md-4">
-            <label class="form-label">結餘時數</label>
-            <input type="number" step="0.01" class="form-control" th:field="*{remainingHours}">
+            <label class="form-label fw-bold">結餘時數</label>
+            <input type="number" step="0.01" class="form-control lockable" th:field="*{remainingHours}">
         </div>
 
         <div class="col-md-12">
-            <label class="form-label">備註</label>
-            <textarea class="form-control" th:field="*{notes}" rows="2"></textarea>
+            <label class="form-label fw-bold">備註</label>
+            <textarea class="form-control lockable" th:field="*{notes}" rows="3"></textarea>
         </div>
 
-        <div class="col-12 mt-4">
-            <button type="submit" class="btn btn-success">儲存</button>
+        <div class="col-12 mt-4 d-flex justify-content-end gap-2">
+            <!-- 返回與儲存按鈕 -->
             <a href="/" class="btn btn-secondary">返回列表</a>
+            <button type="submit" class="btn btn-success" id="saveBtn">儲存變更</button>
         </div>
     </form>
 </div>
+
+<script th:inline="javascript">
+    const isEdit = /*[[${isEdit}]]*/ false;
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        if (isEdit) {
+            // 如果是現有資料的檢視模式，鎖定所有帶有 lockable class 的輸入框並隱藏儲存按鈕
+            document.querySelectorAll('.lockable').forEach(el => {
+                el.disabled = true;
+                // 加入一點樣式讓鎖定的欄位看起來更像純文字顯示
+                el.classList.add('bg-light');
+            });
+            document.getElementById('saveBtn').style.display = 'none';
+        }
+    });
+
+    // 點擊「編輯」按鈕後觸發
+    function enableEdit() {
+        document.querySelectorAll('.lockable').forEach(el => {
+            el.disabled = false;
+            el.classList.remove('bg-light');
+        });
+        document.getElementById('saveBtn').style.display = 'inline-block';
+        document.getElementById('editBtn').style.display = 'none'; // 隱藏編輯按鈕
+        
+        // 將焦點自動移到第一個輸入框
+        const firstInput = document.querySelector('.lockable');
+        if(firstInput) firstInput.focus();
+    }
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

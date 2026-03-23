@@ -17,18 +17,23 @@ public class PatentCase {
     private BigDecimal totalContractHours; 
     private BigDecimal hourlyRate;         
 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate eventDate;      
     private String eventContent;      
     private String assignee;          
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate completionDate; 
     
     private String caseFileNo;        
     private String taskName;          
     private String taskDescription;   
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate assignmentDate; 
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate expectedCompletionDate; 
     private BigDecimal expectedHours;         
     
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate actualCompletionDate;   
     private BigDecimal actualHours;           
     private BigDecimal remainingHours;        
