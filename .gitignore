@@ -42,6 +42,7 @@ frontend/dist/
 **/yarn-debug.log*
 **/yarn-error.log*
 **/.eslintcache
+**/data*
 
 # 環境變數與設定 (避免洩漏敏感資訊)
 **/.env
