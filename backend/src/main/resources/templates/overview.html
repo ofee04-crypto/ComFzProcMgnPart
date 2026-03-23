@@ -20,7 +20,9 @@
                 <th>承辦人</th>
                 <th>任務名稱</th>
                 <th>實際時數</th>
-                <th>結餘時數</th>
+                <th>時數費用</th>
+                <th>事件費用</th>
+                <th>費用說明</th>
             </tr>
             </thead>
             <tbody>
@@ -34,10 +36,12 @@
                 <td th:text="${case.assignee}"></td>
                 <td th:text="${case.taskName}"></td>
                 <td th:text="${case.actualHours}"></td>
-                <td th:text="${case.remainingHours}"></td>
+                <td th:text="${case.hoursFee}"></td>
+                <td th:text="${case.eventFee}"></td>
+                <td th:text="${case.feeDescription}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(cases)}">
-                <td colspan="10" class="text-center">目前無案件資料</td>
+                <td colspan="12" class="text-center">目前無案件資料</td>
             </tr>
             </tbody>
         </table>

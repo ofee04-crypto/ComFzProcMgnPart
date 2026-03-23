@@ -43,12 +43,14 @@
               <!--TAG-->
               <th>任務名稱</th>
               <th>工作項目簡述</th>
-              <th>委派日期</th>
+              <th>任務委派日</th>
               <th>預計完成日</th>
-              <th>預計使用時數</th>
+              <th>預計時數</th>
               <th>實際完成日</th>
-              <th>實際使用時數</th>
-              <th>結餘時數</th>
+              <th>實際時數</th>
+              <th>時數費用</th>
+              <th>事件費用</th>
+              <th>費用說明</th>
               <th>承辦人</th>
               <!--TAG-->
               <th>備註</th>
@@ -71,7 +73,9 @@
               <td th:text="${case.expectedHours}"></td>
               <td th:text="${case.actualCompletionDate}"></td>
               <td th:text="${case.actualHours}"></td>
-              <td th:text="${case.remainingHours}"></td>
+              <td th:text="${case.hoursFee}"></td>
+              <td th:text="${case.eventFee}"></td>
+              <td th:text="${case.feeDescription}"></td>
               <td th:text="${case.assignee}"></td>
               <!--TAG-->
               <td th:text="${case.notes}"></td>

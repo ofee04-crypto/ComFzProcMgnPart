@@ -69,11 +69,32 @@ public class PatentCaseController {
         }
 
         // Auto-calculate hourly rate: ContractAmount / TotalContractHours (rounded to 1 decimal point)
+        java.math.BigDecimal hourlyRate = patentCase.getHourlyRate();
         if (patentCase.getContractAmount() != null && patentCase.getTotalContractHours() != null
                 && patentCase.getTotalContractHours().compareTo(java.math.BigDecimal.ZERO) != 0) {
-            java.math.BigDecimal rate = patentCase.getContractAmount()
+            hourlyRate = patentCase.getContractAmount()
                     .divide(patentCase.getTotalContractHours(), 1, java.math.RoundingMode.HALF_UP);
-            patentCase.setHourlyRate(rate);
+            patentCase.setHourlyRate(hourlyRate);
+        }
+
+        // Auto-calculate hoursFee: actualHours * hourlyRate
+        java.math.BigDecimal hoursFee = java.math.BigDecimal.ZERO;
+        if (patentCase.getActualHours() != null && hourlyRate != null) {
+            hoursFee = patentCase.getActualHours().multiply(hourlyRate);
+            patentCase.setHoursFee(hoursFee);
+        } else {
+            patentCase.setHoursFee(null);
+        }
+
+        // Auto-calculate totalFee: hoursFee + eventFee
+        java.math.BigDecimal total = hoursFee;
+        if (patentCase.getEventFee() != null) {
+            total = total.add(patentCase.getEventFee());
+        }
+        if (patentCase.getHoursFee() != null || patentCase.getEventFee() != null) {
+            patentCase.setTotalFee(total);
+        } else {
+            patentCase.setTotalFee(null);
         }
 
         service.saveCase(patentCase);

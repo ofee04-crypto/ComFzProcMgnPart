@@ -3,6 +3,7 @@ package com.fz.patentmgn.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown = true)
 public class PatentCase {
 
     private String eventNo;           
@@ -12,8 +13,7 @@ public class PatentCase {
     private String appNameEn;         
     private String originalCaseName;  
     private String contractNotes;     
-    
-    private BigDecimal contractAmount;     
+    private BigDecimal contractAmount;        
     private BigDecimal totalContractHours; 
     private BigDecimal hourlyRate;         
 
@@ -36,38 +36,14 @@ public class PatentCase {
     @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate actualCompletionDate;   
     private BigDecimal actualHours;           
-    private BigDecimal remainingHours;        
-    private String notes;                     
+    
+    private BigDecimal hoursFee;        
+    private BigDecimal eventFee;
+    private BigDecimal totalFee;
+    private String feeDescription;
+    private String notes;             
 
-    public PatentCase() {
-    }
-
-    public PatentCase(String eventNo, String contractNo, String applicant, String appName, String appNameEn, String originalCaseName, String contractNotes, BigDecimal contractAmount, BigDecimal totalContractHours, BigDecimal hourlyRate, LocalDate eventDate, String eventContent, String assignee, LocalDate completionDate, String caseFileNo, String taskName, String taskDescription, LocalDate assignmentDate, LocalDate expectedCompletionDate, BigDecimal expectedHours, LocalDate actualCompletionDate, BigDecimal actualHours, BigDecimal remainingHours, String notes) {
-        this.eventNo = eventNo;
-        this.contractNo = contractNo;
-        this.applicant = applicant;
-        this.appName = appName;
-        this.appNameEn = appNameEn;
-        this.originalCaseName = originalCaseName;
-        this.contractNotes = contractNotes;
-        this.contractAmount = contractAmount;
-        this.totalContractHours = totalContractHours;
-        this.hourlyRate = hourlyRate;
-        this.eventDate = eventDate;
-        this.eventContent = eventContent;
-        this.assignee = assignee;
-        this.completionDate = completionDate;
-        this.caseFileNo = caseFileNo;
-        this.taskName = taskName;
-        this.taskDescription = taskDescription;
-        this.assignmentDate = assignmentDate;
-        this.expectedCompletionDate = expectedCompletionDate;
-        this.expectedHours = expectedHours;
-        this.actualCompletionDate = actualCompletionDate;
-        this.actualHours = actualHours;
-        this.remainingHours = remainingHours;
-        this.notes = notes;
-    }
+    public PatentCase() {}
 
     public String getEventNo() { return eventNo; }
     public void setEventNo(String eventNo) { this.eventNo = eventNo; }
@@ -135,10 +111,18 @@ public class PatentCase {
     public BigDecimal getActualHours() { return actualHours; }
     public void setActualHours(BigDecimal actualHours) { this.actualHours = actualHours; }
 
-    public BigDecimal getRemainingHours() { return remainingHours; }
-    public void setRemainingHours(BigDecimal remainingHours) { this.remainingHours = remainingHours; }
+    public BigDecimal getHoursFee() { return hoursFee; }
+    public void setHoursFee(BigDecimal hoursFee) { this.hoursFee = hoursFee; }
+
+    public BigDecimal getEventFee() { return eventFee; }
+    public void setEventFee(BigDecimal eventFee) { this.eventFee = eventFee; }
+
+    public BigDecimal getTotalFee() { return totalFee; }
+    public void setTotalFee(BigDecimal totalFee) { this.totalFee = totalFee; }
+
+    public String getFeeDescription() { return feeDescription; }
+    public void setFeeDescription(String feeDescription) { this.feeDescription = feeDescription; }
 
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
-
 }

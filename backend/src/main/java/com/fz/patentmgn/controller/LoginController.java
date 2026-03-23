@@ -56,4 +56,10 @@ public class LoginController {
         }
         return "redirect:/login";
     }
+
+    @org.springframework.web.bind.annotation.ResponseBody
+    @GetMapping("/favicon.ico")
+    public void returnNoFavicon() {
+        // 攔截瀏覽器預設的 favicon 請求，避免噴出 404 錯誤到終端機上
+    }
 }

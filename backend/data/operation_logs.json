@@ -133,4 +133,64 @@
   "username" : "accountant",
   "action" : "建立新案件: EVT-1774249115063",
   "timestamp" : [ 2026, 3, 23, 14, 58, 35, 80561900 ]
+}, {
+  "id" : "d464e1d5-a5eb-458e-af1e-a2460847ce73",
+  "username" : "accountant",
+  "action" : "關閉地端系統",
+  "timestamp" : [ 2026, 3, 23, 15, 15, 43, 410403900 ]
+}, {
+  "id" : "61b3b447-dcbd-4714-a90e-92c22e204e7c",
+  "username" : "accountant",
+  "action" : "使用者登入",
+  "timestamp" : [ 2026, 3, 23, 15, 20, 46, 747350200 ]
+}, {
+  "id" : "c0be9b35-13ac-4724-b99f-969368aa172d",
+  "username" : "accountant",
+  "action" : "建立新案件: EVT-1774250526088",
+  "timestamp" : [ 2026, 3, 23, 15, 22, 6, 100733400 ]
+}, {
+  "id" : "2e113d39-ba9c-429b-bb0d-1deaadee3f5d",
+  "username" : "accountant",
+  "action" : "關閉地端系統",
+  "timestamp" : [ 2026, 3, 23, 15, 28, 59, 150847700 ]
+}, {
+  "id" : "a1046692-82e5-452a-9e43-5d6d8289d07c",
+  "username" : "accountant",
+  "action" : "使用者登入",
+  "timestamp" : [ 2026, 3, 23, 15, 30, 40, 378337300 ]
+}, {
+  "id" : "d12da276-b2cf-4662-88d7-e83da2d5a04b",
+  "username" : "accountant",
+  "action" : "更新案件: EVT-1774237281682",
+  "timestamp" : [ 2026, 3, 23, 15, 31, 21, 180838300 ]
+}, {
+  "id" : "fc7c22b3-4024-452b-8163-30a0b9311d2f",
+  "username" : "accountant",
+  "action" : "建立新案件: EVT-1774251364969",
+  "timestamp" : [ 2026, 3, 23, 15, 36, 4, 972712900 ]
+}, {
+  "id" : "5278750b-b7bd-4829-b5c9-e2fa4109a5a4",
+  "username" : "accountant",
+  "action" : "關閉地端系統",
+  "timestamp" : [ 2026, 3, 23, 15, 37, 27, 536992600 ]
+}, {
+  "id" : "89a551cd-5997-4f52-9832-17b900f8bec1",
+  "username" : "accountant",
+  "action" : "使用者登入",
+  "timestamp" : [ 2026, 3, 23, 15, 38, 19, 605757600 ]
+}, {
+  "id" : "d247bfc5-899e-402e-9a6d-f535f88802df",
+  "username" : "accountant",
+  "action" : "關閉地端系統",
+  "timestamp" : [ 2026, 3, 23, 15, 43, 13, 161301500 ]
+}, {
+  "id" : "5b3050c3-3e08-4fc8-9f25-ee17167295e4",
+  "username" : "accountant",
+  "action" : "使用者登入",
+  "timestamp" : [ 2026, 3, 23, 15, 44, 2, 755300400 ]
+}, {
+  "id" : "f05a957a-4110-4154-9431-3b4becbced09",
+  "username" : "accountant",
+  "action" : "更新案件: EVT-1774250526088",
+  "timestamp" : [ 2026, 3, 23, 15, 57, 4, 853521200 ]
 } ]

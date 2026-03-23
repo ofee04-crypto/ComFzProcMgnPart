@@ -66,8 +66,8 @@
           ></textarea>
         </div>
 
-        <div class="col-md-4">
-          <label class="form-label fw-bold">合約金額(NTD)</label>
+        <div class="col-md-2">
+          <label class="form-label fw-bold">合約金額-NTD</label>
           <input
             type="number"
             step="0.01"
@@ -75,8 +75,8 @@
             th:field="*{contractAmount}"
           />
         </div>
-        <div class="col-md-4">
-          <label class="form-label fw-bold">合約總時數(hrs)</label>
+        <div class="col-md-2">
+          <label class="form-label fw-bold">合約總時數-hrs</label>
           <input
             type="number"
             step="0.01"
@@ -84,9 +84,9 @@
             th:field="*{totalContractHours}"
           />
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
           <label class="form-label fw-bold text-success"
-            >小時費用(自動欄位)</label
+            >小時費用-NTD(自動)</label
           >
           <input
             type="number"
@@ -151,9 +151,18 @@
           <textarea
             class="form-control lockable"
             th:field="*{taskDescription}"
-            rows="3"
+            rows="2"
           ></textarea>
         </div>
+
+        <!-- <div class="col-md-12">
+          <label class="form-label fw-bold">費用說明</label>
+          <textarea
+            class="form-control lockable"
+            th:field="*{feeDescription}"
+            rows="2"
+          ></textarea>
+        </div> -->
 
         <div class="col-md-2">
           <label class="form-label fw-bold">委派日期</label>
@@ -165,47 +174,78 @@
         </div>
 
         <div class="col-md-2">
-          <label class="form-label fw-bold text-primary">預計完成日</label>
+          <label class="form-label fw-bold">預計完成日</label>
           <input
             type="date"
-            class="form-control lockable border-primary-subtle"
+            class="form-control lockable"
             th:field="*{expectedCompletionDate}"
           />
         </div>
 
         <div class="col-md-2">
-          <label class="form-label fw-bold text-primary">預計使用時數</label>
-          <input
-            type="number"
-            step="0.01"
-            class="form-control lockable border-primary-subtle"
-            th:field="*{expectedHours}"
-          />
-        </div>
-        <div class="col-md-2">
-          <label class="form-label fw-bold text-success">實際完成日</label>
-          <input
-            type="date"
-            class="form-control lockable border-success-subtle"
-            th:field="*{actualCompletionDate}"
-          />
-        </div>
-        <div class="col-md-2">
-          <label class="form-label fw-bold text-success">實際使用時數</label>
-          <input
-            type="number"
-            step="0.01"
-            class="form-control lockable border-success-subtle"
-            th:field="*{actualHours}"
-          />
-        </div>
-        <div class="col-md-2">
-          <label class="form-label fw-bold">結餘時數</label>
+          <label class="form-label fw-bold">預計使用時數-hrs</label>
           <input
             type="number"
             step="0.01"
             class="form-control lockable"
-            th:field="*{remainingHours}"
+            th:field="*{expectedHours}"
+          />
+        </div>
+        <br />
+        <div class="col-md-2">
+          <label class="form-label fw-bold text-primary">實際完成日</label>
+          <input
+            type="date"
+            class="form-control lockable border-primary-subtle"
+            th:field="*{actualCompletionDate}"
+          />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label fw-bold text-primary"
+            >實際使用時數-hrs</label
+          >
+          <input
+            type="number"
+            step="0.01"
+            class="form-control lockable border-primary-subtle"
+            th:field="*{actualHours}"
+          />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label fw-bold text-success"
+            >時數費用-NTD(自動)</label
+          >
+          <input
+            type="number"
+            step="0.01"
+            class="form-control lockable border-success-subtle"
+            th:field="*{hoursFee}"
+            readonly
+            style="background-color: #f8f9fa"
+          />
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label fw-bold">事件費用-NTD</label>
+          <input
+            type="number"
+            step="0.01"
+            class="form-control lockable"
+            th:field="*{eventFee}"
+          />
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label fw-bold text-success"
+            >總費用-NTD(自動)</label
+          >
+          <input
+            type="number"
+            step="0.01"
+            class="form-control lockable border-success-subtle"
+            th:field="*{totalFee}"
+            readonly
+            style="background-color: #f8f9fa"
           />
         </div>
 
@@ -233,34 +273,82 @@
       const contractsJsonData =
         /*[[${contractsJson != null ? contractsJson : '{}'}]]*/ "{}";
 
-      // 自動計算小時費用
-      function calculateHourlyRate() {
+      // 自動計算各項費用
+      function calculateAllFees() {
         const amountStr = document.getElementById("contractAmount").value;
         const hoursStr = document.getElementById("totalContractHours").value;
-        const rateInput = document.getElementById("hourlyRate");
+        const actHoursStr = document.getElementById("actualHours").value;
+        const eventFeeStr = document.getElementById("eventFee").value;
 
+        const rateInput = document.getElementById("hourlyRate");
+        const hoursFeeInput = document.getElementById("hoursFee");
+        const totalFeeInput = document.getElementById("totalFee");
+
+        // 1. 小時費用
+        let hourlyRateVal = 0;
         if (amountStr && hoursStr) {
           const amount = parseFloat(amountStr);
           const hours = parseFloat(hoursStr);
           if (hours !== 0 && !isNaN(amount) && !isNaN(hours)) {
-            const tempRate = amount / hours;
-            // 四捨五入至小數點第一位
-            const roundedRate = Math.round(tempRate * 10) / 10;
-            rateInput.value = roundedRate;
+            hourlyRateVal = Math.round((amount / hours) * 10) / 10;
+            rateInput.value = hourlyRateVal;
           } else {
             rateInput.value = "";
           }
         } else {
           rateInput.value = "";
         }
+
+        // 2. 時數費用 = 實際使用時數 * 小時費用
+        let hoursFeeVal = 0;
+        if (actHoursStr && rateInput.value) {
+          const actualHrs = parseFloat(actHoursStr);
+          if (!isNaN(actualHrs)) {
+            hoursFeeVal = Math.round(actualHrs * hourlyRateVal * 100) / 100;
+            hoursFeeInput.value = hoursFeeVal;
+          } else {
+            hoursFeeInput.value = "";
+          }
+        } else {
+          hoursFeeInput.value = "";
+        }
+
+        // 3. 總費用 = 時數費用 + 事件費用
+        let totalFeeVal = 0;
+        let hasFee = false;
+
+        if (hoursFeeInput.value !== "") {
+          totalFeeVal += parseFloat(hoursFeeInput.value);
+          hasFee = true;
+        }
+
+        if (eventFeeStr) {
+          const evtFee = parseFloat(eventFeeStr);
+          if (!isNaN(evtFee)) {
+            totalFeeVal += evtFee;
+            hasFee = true;
+          }
+        }
+
+        if (hasFee) {
+          totalFeeInput.value = Math.round(totalFeeVal * 100) / 100;
+        } else {
+          totalFeeInput.value = "";
+        }
       }
 
       document.addEventListener("DOMContentLoaded", function () {
-        // 綁定輸入事件
-        const amtInput = document.getElementById("contractAmount");
-        const hrsInput = document.getElementById("totalContractHours");
-        if (amtInput) amtInput.addEventListener("input", calculateHourlyRate);
-        if (hrsInput) hrsInput.addEventListener("input", calculateHourlyRate);
+        // 綁定所有會影響費用的輸入事件
+        const inputs = [
+          "contractAmount",
+          "totalContractHours",
+          "actualHours",
+          "eventFee",
+        ];
+        inputs.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener("input", calculateAllFees);
+        });
 
         // 新增案件時：建立可查詢的滾動下拉選單與自動代入邏輯
         if (!isEdit && contractsJsonData && contractsJsonData !== "{}") {
@@ -307,8 +395,8 @@
                   document.getElementById("totalContractHours").value =
                     data.totalContractHours;
 
-                // 自動重算小時費用
-                calculateHourlyRate();
+                // 自動重算各項費用
+                calculateAllFees();
               }
             });
           } catch (e) {
