@@ -62,7 +62,7 @@
           <textarea
             class="form-control lockable"
             th:field="*{contractNotes}"
-            rows="2"
+            rows="1"
           ></textarea>
         </div>
 
@@ -70,7 +70,7 @@
           <label class="form-label fw-bold">合約金額-NTD</label>
           <input
             type="number"
-            step="0.01"
+            step="160000"
             class="form-control lockable"
             th:field="*{contractAmount}"
           />
@@ -79,7 +79,7 @@
           <label class="form-label fw-bold">合約總時數-hrs</label>
           <input
             type="number"
-            step="0.01"
+            step="1"
             class="form-control lockable"
             th:field="*{totalContractHours}"
           />
@@ -90,7 +90,7 @@
           >
           <input
             type="number"
-            step="0.01"
+            step="1"
             class="form-control lockable"
             th:field="*{hourlyRate}"
             readonly
@@ -98,8 +98,110 @@
           />
         </div>
 
-        <hr class="mt-4 mb-1 border-secondary" />
+        <hr class="mt-4 mb-2 border-secondary" />
+        <div class="d-flex align-items-center justify-content-between">
+          <h5 class="fw-bold text-dark mb-0">
+            <i class="bi bi-currency-dollar me-2"></i>合約收款與憑證-配合PTS
+          </h5>
+          <button
+            class="btn btn-sm btn-warning collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#receiptsSection"
+            aria-expanded="false"
+            aria-controls="receiptsSection"
+          >
+            <i class="bi bi-arrows-expand"></i> 收合/展開
+          </button>
+        </div>
 
+        <div class="collapse" id="receiptsSection">
+          <div class="row g-3 mt-1">
+            <!-- 4. 收款與憑證 -->
+            <div class="col-md-3">
+              <label class="form-label fw-bold">請款單號</label>
+              <input
+                type="text"
+                class="form-control lockable"
+                th:field="*{invoiceRequestNo}"
+              />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-bold">實際收款</label>
+              <input
+                type="number"
+                step="1000"
+                class="form-control lockable"
+                th:field="*{actualReceived}"
+              />
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-3">
+              <label class="form-label fw-bold">收據日期</label>
+              <input
+                type="date"
+                class="form-control lockable"
+                th:field="*{receiptDate}"
+              />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-bold">收款日期</label>
+              <input
+                type="date"
+                class="form-control lockable"
+                th:field="*{paymentReceivedDate}"
+              />
+            </div>
+            <div class="col-md-1">
+              <label class="form-label fw-bold">已收款</label>
+              <select class="form-select lockable" th:field="*{isWithheld}">
+                <option value="否">否</option>
+                <option value="是">是</option>
+              </select>
+            </div>
+
+            <div class="col-md-5"></div>
+            <div class="col-md-3">
+              <label class="form-label fw-bold">發票日期</label>
+              <input
+                type="date"
+                class="form-control lockable"
+                th:field="*{invoiceDate}"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label fw-bold">發票號碼</label>
+              <input
+                type="text"
+                class="form-control lockable"
+                th:field="*{invoiceNo}"
+              />
+            </div>
+            <!-- <div class="col-md-3">
+          <label class="form-label fw-bold">立帳傳票號碼</label>
+          <input
+            type="text"
+            class="form-control lockable"
+            th:field="*{voucherNo}"
+          />
+        </div> -->
+
+            <div class="col-md-12">
+              <label class="form-label fw-bold">請款備註</label>
+              <textarea
+                class="form-control lockable"
+                th:field="*{invoiceNote}"
+                rows="1"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <hr class="mt-4 mb-1 border-secondary" />
+        <h5 class="fw-bold text-dark mb-0">
+          <i class="bi bi-currency-dollar me-2"></i>事件資料
+        </h5>
         <div class="col-md-3">
           <label class="form-label fw-bold text-danger">案件/檔案編號</label>
           <input
@@ -186,7 +288,7 @@
           <label class="form-label fw-bold">預計使用時數-hrs</label>
           <input
             type="number"
-            step="0.01"
+            step="1"
             class="form-control lockable"
             th:field="*{expectedHours}"
           />
@@ -205,7 +307,7 @@
           >
           <input
             type="number"
-            step="0.01"
+            step="1"
             class="form-control lockable border-primary-subtle"
             th:field="*{actualHours}"
           />
@@ -216,7 +318,7 @@
           >
           <input
             type="number"
-            step="0.01"
+            step="1"
             class="form-control lockable border-success-subtle"
             th:field="*{hoursFee}"
             readonly
@@ -228,7 +330,7 @@
           <label class="form-label fw-bold">事件費用-NTD</label>
           <input
             type="number"
-            step="0.01"
+            step="1000"
             class="form-control lockable"
             th:field="*{eventFee}"
           />
@@ -240,7 +342,7 @@
           >
           <input
             type="number"
-            step="0.01"
+            step="1000"
             class="form-control lockable border-success-subtle"
             th:field="*{totalFee}"
             readonly
@@ -253,7 +355,7 @@
           <textarea
             class="form-control lockable"
             th:field="*{notes}"
-            rows="3"
+            rows="1"
           ></textarea>
         </div>
 
@@ -282,6 +384,7 @@
         const rateInput = document.getElementById("hourlyRate");
         const hoursFeeInput = document.getElementById("hoursFee");
         const totalFeeInput = document.getElementById("totalFee");
+        const totalInvoicedInput = document.getElementById("totalInvoiced");
 
         // 1. 小時費用
         let hourlyRateVal = 0;
@@ -289,50 +392,79 @@
           const amount = parseFloat(amountStr);
           const hours = parseFloat(hoursStr);
           if (hours !== 0 && !isNaN(amount) && !isNaN(hours)) {
-            hourlyRateVal = Math.round((amount / hours) * 10) / 10;
-            rateInput.value = hourlyRateVal;
+            hourlyRateVal = Math.round(amount / hours);
+            if (rateInput) rateInput.value = hourlyRateVal;
           } else {
-            rateInput.value = "";
+            if (rateInput) rateInput.value = "";
           }
         } else {
-          rateInput.value = "";
+          if (rateInput) rateInput.value = "";
         }
 
         // 2. 時數費用 = 實際使用時數 * 小時費用
-        let hoursFeeVal = 0;
-        if (actHoursStr && rateInput.value) {
+        if (actHoursStr && rateInput && rateInput.value) {
           const actualHrs = parseFloat(actHoursStr);
           if (!isNaN(actualHrs)) {
-            hoursFeeVal = Math.round(actualHrs * hourlyRateVal * 100) / 100;
-            hoursFeeInput.value = hoursFeeVal;
+            const hoursFeeVal =
+              Math.round(actualHrs * hourlyRateVal * 100) / 100;
+            if (hoursFeeInput) hoursFeeInput.value = hoursFeeVal;
           } else {
-            hoursFeeInput.value = "";
+            if (hoursFeeInput) hoursFeeInput.value = "";
           }
         } else {
-          hoursFeeInput.value = "";
+          if (hoursFeeInput) hoursFeeInput.value = "";
         }
 
-        // 3. 總費用 = 時數費用 + 事件費用
-        let totalFeeVal = 0;
-        let hasFee = false;
+        // 3.1 總費用-NTD(自動) = 時數費用 + 事件費用
+        const hoursFee =
+          parseFloat(document.getElementById("hoursFee")?.value) || 0;
+        const eventFee =
+          parseFloat(document.getElementById("eventFee")?.value) || 0;
 
-        if (hoursFeeInput.value !== "") {
-          totalFeeVal += parseFloat(hoursFeeInput.value);
-          hasFee = true;
-        }
-
-        if (eventFeeStr) {
-          const evtFee = parseFloat(eventFeeStr);
-          if (!isNaN(evtFee)) {
-            totalFeeVal += evtFee;
-            hasFee = true;
-          }
-        }
-
-        if (hasFee) {
+        const totalFeeVal = hoursFee + eventFee;
+        // const totalFeeVal = hoursFee + eventFee + serviceFee + pageFee + itemFee + customFee;
+        if (totalFeeInput) {
           totalFeeInput.value = Math.round(totalFeeVal * 100) / 100;
+        }
+        // 3.2 收費合計 = 服務費 + 超頁費 + 超項費 + 自定義費
+
+        const serviceFee =
+          parseFloat(document.getElementById("serviceFee")?.value) || 0;
+        const pageFee =
+          parseFloat(document.getElementById("pageFee")?.value) || 0;
+        const itemFee =
+          parseFloat(document.getElementById("itemFee")?.value) || 0;
+        const customFee =
+          parseFloat(document.getElementById("customFee")?.value) || 0;
+
+        const totalInvoiced = serviceFee + pageFee + itemFee + customFee;
+        if (totalInvoicedInput) {
+          totalInvoicedInput.value = Math.round(totalInvoiced * 100) / 100;
+        }
+        // 4. 稅額計算
+        const taxRate =
+          parseFloat(document.getElementById("taxRate")?.value) || 0;
+        if (taxRate === 0) {
+          if (document.getElementById("preTaxAmount"))
+            document.getElementById("preTaxAmount").value = "";
+          if (document.getElementById("salesTax"))
+            document.getElementById("salesTax").value = "";
         } else {
-          totalFeeInput.value = "";
+          const preTaxAmount = Math.round(totalFeeVal / (1 + taxRate)); // 公式: 四捨五入(收費合計/(1+稅額))
+          const salesTax = totalFeeVal - preTaxAmount; // 公式: 收費合計 - 未稅金額
+
+          if (document.getElementById("preTaxAmount"))
+            document.getElementById("preTaxAmount").value = preTaxAmount;
+          if (document.getElementById("salesTax"))
+            document.getElementById("salesTax").value = salesTax;
+        }
+
+        // 5. 合計NT
+        const exchangeRate =
+          parseFloat(document.getElementById("exchangeRate")?.value) || 1;
+        if (document.getElementById("totalInNtd")) {
+          document.getElementById("totalInNtd").value =
+            Math.round(totalFeeVal * exchangeRate * 100) / 100;
         }
       }
 
@@ -343,6 +475,12 @@
           "totalContractHours",
           "actualHours",
           "eventFee",
+          "serviceFee",
+          "pageFee",
+          "itemFee",
+          "customFee",
+          "taxRate",
+          "exchangeRate",
         ];
         inputs.forEach((id) => {
           const el = document.getElementById(id);
@@ -394,6 +532,53 @@
                   document.getElementById("totalContractHours").value =
                     data.totalContractHours;
 
+                if (
+                  document.getElementById("invoiceRequestNo") &&
+                  data.invoiceRequestNo !== undefined
+                )
+                  document.getElementById("invoiceRequestNo").value =
+                    data.invoiceRequestNo;
+                if (
+                  document.getElementById("actualReceived") &&
+                  data.actualReceived !== undefined
+                )
+                  document.getElementById("actualReceived").value =
+                    data.actualReceived;
+                if (
+                  document.getElementById("receiptDate") &&
+                  data.receiptDate !== undefined
+                )
+                  document.getElementById("receiptDate").value =
+                    data.receiptDate;
+                if (
+                  document.getElementById("paymentReceivedDate") &&
+                  data.paymentReceivedDate !== undefined
+                )
+                  document.getElementById("paymentReceivedDate").value =
+                    data.paymentReceivedDate;
+                if (
+                  document.getElementById("isWithheld") &&
+                  data.isWithheld !== undefined
+                )
+                  document.getElementById("isWithheld").value = data.isWithheld;
+                if (
+                  document.getElementById("invoiceDate") &&
+                  data.invoiceDate !== undefined
+                )
+                  document.getElementById("invoiceDate").value =
+                    data.invoiceDate;
+                if (
+                  document.getElementById("invoiceNo") &&
+                  data.invoiceNo !== undefined
+                )
+                  document.getElementById("invoiceNo").value = data.invoiceNo;
+                if (
+                  document.getElementById("invoiceNote") &&
+                  data.invoiceNote !== undefined
+                )
+                  document.getElementById("invoiceNote").value =
+                    data.invoiceNote;
+
                 // 自動重算各項費用
                 calculateAllFees();
               }
@@ -426,6 +611,214 @@
         const firstInput = document.querySelector(".lockable");
         if (firstInput) firstInput.focus();
       }
+
+      // HTML 備用請款資訊-配合PTS
+      //   <hr class="mt-4 mb-2 border-secondary" />
+      //   <h5 class="fw-bold text-dark">
+      //     <i class="bi bi-currency-dollar me-2"></i>請款資訊-配合PTS
+      //   </h5>
+
+      //   <!-- 1. 收費明細 -->
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold">服務費</label>
+      //     <input
+      //       type="number"
+      //       step="1000"
+      //       class="form-control lockable calc-trigger"
+      //       th:field="*{serviceFee}"
+      //       id="serviceFee"
+      //     />
+      //   </div>
+
+      //   <!-- 2. 稅額與扣抵 -->
+      //   <!-- <div class="col-md-2">
+      //     <label class="form-label fw-bold text-success"
+      //       >總費用-NTD(自動)</label
+      //     >
+      //     <input
+      //       type="number"
+      //       step="1000"
+      //       class="form-control lockable border-success-subtle"
+      //       th:field="*{totalFee}"
+      //       readonly
+      //       style="background-color: #f8f9fa"
+      //     />
+      //   </div> -->
+
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold">收費合計</label>
+      //     <input
+      //       type="number"
+      //       step="0.01"
+      //       class="form-control lockable"
+      //       th:field="*{totalInvoiced}"
+      //     />
+      //   </div>
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold text-success">收費合計</label>
+      //     <input
+      //       type="number"
+      //       step="1000"
+      //       class="form-control lockable border-success-subtle"
+      //       th:field="*{totalFee}"
+      //       readonly
+      //       style="background-color: #f8f9fa"
+      //     />
+      //   </div>
+      //   <!-- 1. 收費明細 -->
+      //   <div class="col-md-6"></div>
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold">超頁費</label>
+      //     <input
+      //       type="number"
+      //       step="0.01"
+      //       class="form-control lockable calc-trigger"
+      //       th:field="*{pageFee}"
+      //       id="pageFee"
+      //       disabled
+      //     />
+      //   </div>
+      //   <!-- 2. 稅額與扣抵 -->
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold">稅額種類</label>
+      //     <select
+      //       class="form-select lockable calc-trigger"
+      //       th:field="*{taxType}"
+      //       id="taxType"
+      //     >
+      //       <option value="無">無</option>
+      //       <option value="營業稅">營業稅</option>
+      //       <option value="營所稅">營所稅</option>
+      //     </select>
+      //   </div>
+
+      //   <!-- 3. 請款與匯率 -->
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold">幣別</label>
+      //     <input
+      //       type="text"
+      //       class="form-control lockable"
+      //       th:field="*{currency}"
+      //       value="TWD"
+      //     />
+      //   </div>
+
+      //   <div class="col-md-6"></div>
+      //   <!-- 1. 收費明細 -->
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold">超項費</label>
+      //     <input
+      //       type="number"
+      //       step="1000"
+      //       class="form-control lockable calc-trigger"
+      //       th:field="*{itemFee}"
+      //       id="itemFee"
+      //     />
+      //   </div>
+      //   <!-- 2. 稅額與扣抵 -->
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold">稅率</label>
+      //     <input
+      //       type="number"
+      //       step="0.05"
+      //       class="form-control lockable calc-trigger"
+      //       th:field="*{taxRate}"
+      //       id="taxRate"
+      //       placeholder="例如 0.05"
+      //     />
+      //   </div>
+      //   <!-- 3. 請款與匯率 -->
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold">兌NT</label>
+      //     <input
+      //       type="number"
+      //       step="0.1"
+      //       class="form-control lockable calc-trigger"
+      //       th:field="*{exchangeRate}"
+      //       id="exchangeRate"
+      //     />
+      //   </div>
+      //   <div class="col-md-6"></div>
+      //   <!-- 1. 收費明細 -->
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold">自定義</label>
+      //     <input
+      //       type="number"
+      //       step="1000"
+      //       class="form-control lockable calc-trigger"
+      //       th:field="*{customFee}"
+      //       id="customFee"
+      //     />
+      //   </div>
+
+      //   <!-- 2. 稅額與扣抵 -->
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold">預扣稅額</label>
+      //     <input
+      //       type="number"
+      //       step="1"
+      //       class="form-control lockable"
+      //       th:field="*{withholdingTax}"
+      //     />
+      //   </div>
+
+      //   <!-- 3. 請款與匯率 -->
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold text-success">合計NT (自動)</label>
+      //     <input
+      //       type="number"
+      //       step="0.01"
+      //       class="form-control lockable border-success-subtle"
+      //       th:field="*{totalInNtd}"
+      //       id="totalInNtd"
+      //       readonly
+      //       style="background-color: #f8f9fa"
+      //     />
+      //   </div>
+      //   <div class="col-md-6"></div>
+      //   <div class="col-md-2"></div>
+      //   <!-- 2. 稅額與扣抵 -->
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold text-success">營業稅 (自動)</label>
+      //     <input
+      //       type="number"
+      //       step="0.01"
+      //       class="form-control lockable border-success-subtle"
+      //       th:field="*{salesTax}"
+      //       id="salesTax"
+      //       readonly
+      //       style="background-color: #f8f9fa"
+      //     />
+      //   </div>
+
+      //   <!-- 3. 請款與匯率 -->
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold">外幣收款</label>
+      //     <select
+      //       class="form-select lockable"
+      //       th:field="*{isForeignCurrencyReceived}"
+      //     >
+      //       <option value="否">否</option>
+      //       <option value="是">是</option>
+      //     </select>
+      //   </div>
+      //   <div class="col-md-6"></div>
+      //   <div class="col-md-2"></div>
+      //   <!-- 2. 稅額與扣抵 -->
+      //   <div class="col-md-2">
+      //     <label class="form-label fw-bold text-success">未稅金額 (自動)</label>
+      //     <input
+      //       type="number"
+      //       step="0.01"
+      //       class="form-control lockable border-success-subtle"
+      //       th:field="*{preTaxAmount}"
+      //       id="preTaxAmount"
+      //       readonly
+      //       style="background-color: #f8f9fa"
+      //     />
+      //   </div>
+      //   <div class="col-md-8"></div>
+      //   <div class="col-md-2"></div>
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

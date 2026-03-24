@@ -6,123 +6,474 @@ import java.time.LocalDate;
 @com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown = true)
 public class PatentCase {
 
-    private String eventNo;           
-    private String contractNo;        
-    private String applicant;         
-    private String appName;           
-    private String appNameEn;         
-    private String originalCaseName;  
-    private String contractNotes;     
-    private BigDecimal contractAmount;        
-    private BigDecimal totalContractHours; 
-    private BigDecimal hourlyRate;         
+    private String eventNo;
+    private String contractNo;
+    private String applicant;
+    private String appName;
+    private String appNameEn;
+    private String originalCaseName;
+    private String contractNotes;
+    private BigDecimal contractAmount;
+    private BigDecimal totalContractHours;
+    private BigDecimal hourlyRate;
 
     @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate eventDate;      
-    private String eventContent;      
-    private String assignee;          
+    private LocalDate eventDate;
+    private String eventContent;
+    private String assignee;
     @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate completionDate; 
-    
-    private String caseFileNo;        
-    private String taskName;          
-    private String taskDescription;   
+    private LocalDate completionDate;
+
+    private String caseFileNo;
+    private String taskName;
+    private String taskDescription;
     @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate assignmentDate; 
+    private LocalDate assignmentDate;
     @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate expectedCompletionDate; 
-    private BigDecimal expectedHours;         
-    
+    private LocalDate expectedCompletionDate;
+    private BigDecimal expectedHours;
+
     @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate actualCompletionDate;   
-    private BigDecimal actualHours;           
-    
-    private BigDecimal hoursFee;        
+    private LocalDate actualCompletionDate;
+    private BigDecimal actualHours;
+
+    private BigDecimal hoursFee;
     private BigDecimal eventFee;
     private BigDecimal totalFee;
     private String feeDescription;
-    private String notes;             
 
-    public PatentCase() {}
+    private BigDecimal serviceFee = BigDecimal.ZERO; // 服務費
+    private BigDecimal pageFee = BigDecimal.ZERO; // 超頁費
+    private BigDecimal itemFee = BigDecimal.ZERO; // 超項費
+    private BigDecimal customFee = BigDecimal.ZERO; // 自定義費
 
-    public String getEventNo() { return eventNo; }
-    public void setEventNo(String eventNo) { this.eventNo = eventNo; }
+    private String taxType = "無"; // 稅額種類
+    private BigDecimal taxRate = BigDecimal.ZERO; // 稅額% (例如 0.05 代表 5%)
+    private BigDecimal withholdingTax = BigDecimal.ZERO; // 預扣稅額
+    private BigDecimal salesTax = BigDecimal.ZERO; // 營業稅
+    private BigDecimal preTaxAmount = BigDecimal.ZERO; // 未稅金額
+    private String isWithheld = "否"; // 已預扣 (是/否, 預設 否)
 
-    public String getContractNo() { return contractNo; }
-    public void setContractNo(String contractNo) { this.contractNo = contractNo; }
+    private BigDecimal totalInvoiced; // 請款合計
+    private String currency = "TWD"; // 幣別
+    private BigDecimal exchangeRate; // 兌NT
+    private BigDecimal totalInNtd; // 合計NT
+    private String isForeignCurrencyReceived = "否"; // 外幣收款 (是/否, 預設 否)
 
-    public String getApplicant() { return applicant; }
-    public void setApplicant(String applicant) { this.applicant = applicant; }
+    private String invoiceRequestNo; // 請款單號
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate receiptDate; // 收據日期
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate invoiceDate; // 發票日期
+    @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate paymentReceivedDate; // 收款日期
+    private String invoiceNo; // 發票號碼
+    private String voucherNo; // 立帳傳票號碼
+    private BigDecimal actualReceived; // 實際收款
+    private String invoiceNote; // 請款備註
 
-    public String getAppName() { return appName; }
-    public void setAppName(String appName) { this.appName = appName; }
+    private String notes;
 
-    public String getAppNameEn() { return appNameEn; }
-    public void setAppNameEn(String appNameEn) { this.appNameEn = appNameEn; }
+    public PatentCase() {
+    }
 
-    public String getOriginalCaseName() { return originalCaseName; }
-    public void setOriginalCaseName(String originalCaseName) { this.originalCaseName = originalCaseName; }
+    public String getEventNo() {
+        return eventNo;
+    }
 
-    public String getContractNotes() { return contractNotes; }
-    public void setContractNotes(String contractNotes) { this.contractNotes = contractNotes; }
+    public void setEventNo(String eventNo) {
+        this.eventNo = eventNo;
+    }
 
-    public BigDecimal getContractAmount() { return contractAmount; }
-    public void setContractAmount(BigDecimal contractAmount) { this.contractAmount = contractAmount; }
+    public String getContractNo() {
+        return contractNo;
+    }
 
-    public BigDecimal getTotalContractHours() { return totalContractHours; }
-    public void setTotalContractHours(BigDecimal totalContractHours) { this.totalContractHours = totalContractHours; }
+    public void setContractNo(String contractNo) {
+        this.contractNo = contractNo;
+    }
 
-    public BigDecimal getHourlyRate() { return hourlyRate; }
-    public void setHourlyRate(BigDecimal hourlyRate) { this.hourlyRate = hourlyRate; }
+    public String getApplicant() {
+        return applicant;
+    }
 
-    public LocalDate getEventDate() { return eventDate; }
-    public void setEventDate(LocalDate eventDate) { this.eventDate = eventDate; }
+    public void setApplicant(String applicant) {
+        this.applicant = applicant;
+    }
 
-    public String getEventContent() { return eventContent; }
-    public void setEventContent(String eventContent) { this.eventContent = eventContent; }
+    public String getAppName() {
+        return appName;
+    }
 
-    public String getAssignee() { return assignee; }
-    public void setAssignee(String assignee) { this.assignee = assignee; }
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 
-    public LocalDate getCompletionDate() { return completionDate; }
-    public void setCompletionDate(LocalDate completionDate) { this.completionDate = completionDate; }
+    public String getAppNameEn() {
+        return appNameEn;
+    }
 
-    public String getCaseFileNo() { return caseFileNo; }
-    public void setCaseFileNo(String caseFileNo) { this.caseFileNo = caseFileNo; }
+    public void setAppNameEn(String appNameEn) {
+        this.appNameEn = appNameEn;
+    }
 
-    public String getTaskName() { return taskName; }
-    public void setTaskName(String taskName) { this.taskName = taskName; }
+    public String getOriginalCaseName() {
+        return originalCaseName;
+    }
 
-    public String getTaskDescription() { return taskDescription; }
-    public void setTaskDescription(String taskDescription) { this.taskDescription = taskDescription; }
+    public void setOriginalCaseName(String originalCaseName) {
+        this.originalCaseName = originalCaseName;
+    }
 
-    public LocalDate getAssignmentDate() { return assignmentDate; }
-    public void setAssignmentDate(LocalDate assignmentDate) { this.assignmentDate = assignmentDate; }
+    public String getContractNotes() {
+        return contractNotes;
+    }
 
-    public LocalDate getExpectedCompletionDate() { return expectedCompletionDate; }
-    public void setExpectedCompletionDate(LocalDate expectedCompletionDate) { this.expectedCompletionDate = expectedCompletionDate; }
+    public void setContractNotes(String contractNotes) {
+        this.contractNotes = contractNotes;
+    }
 
-    public BigDecimal getExpectedHours() { return expectedHours; }
-    public void setExpectedHours(BigDecimal expectedHours) { this.expectedHours = expectedHours; }
+    public BigDecimal getContractAmount() {
+        return contractAmount;
+    }
 
-    public LocalDate getActualCompletionDate() { return actualCompletionDate; }
-    public void setActualCompletionDate(LocalDate actualCompletionDate) { this.actualCompletionDate = actualCompletionDate; }
+    public void setContractAmount(BigDecimal contractAmount) {
+        this.contractAmount = contractAmount;
+    }
 
-    public BigDecimal getActualHours() { return actualHours; }
-    public void setActualHours(BigDecimal actualHours) { this.actualHours = actualHours; }
+    public BigDecimal getTotalContractHours() {
+        return totalContractHours;
+    }
 
-    public BigDecimal getHoursFee() { return hoursFee; }
-    public void setHoursFee(BigDecimal hoursFee) { this.hoursFee = hoursFee; }
+    public void setTotalContractHours(BigDecimal totalContractHours) {
+        this.totalContractHours = totalContractHours;
+    }
 
-    public BigDecimal getEventFee() { return eventFee; }
-    public void setEventFee(BigDecimal eventFee) { this.eventFee = eventFee; }
+    public BigDecimal getHourlyRate() {
+        return hourlyRate;
+    }
 
-    public BigDecimal getTotalFee() { return totalFee; }
-    public void setTotalFee(BigDecimal totalFee) { this.totalFee = totalFee; }
+    public void setHourlyRate(BigDecimal hourlyRate) {
+        this.hourlyRate = hourlyRate;
+    }
 
-    public String getFeeDescription() { return feeDescription; }
-    public void setFeeDescription(String feeDescription) { this.feeDescription = feeDescription; }
+    public LocalDate getEventDate() {
+        return eventDate;
+    }
 
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
+    public void setEventDate(LocalDate eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public String getEventContent() {
+        return eventContent;
+    }
+
+    public void setEventContent(String eventContent) {
+        this.eventContent = eventContent;
+    }
+
+    public String getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
+
+    public LocalDate getCompletionDate() {
+        return completionDate;
+    }
+
+    public void setCompletionDate(LocalDate completionDate) {
+        this.completionDate = completionDate;
+    }
+
+    public String getCaseFileNo() {
+        return caseFileNo;
+    }
+
+    public void setCaseFileNo(String caseFileNo) {
+        this.caseFileNo = caseFileNo;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public String getTaskDescription() {
+        return taskDescription;
+    }
+
+    public void setTaskDescription(String taskDescription) {
+        this.taskDescription = taskDescription;
+    }
+
+    public LocalDate getAssignmentDate() {
+        return assignmentDate;
+    }
+
+    public void setAssignmentDate(LocalDate assignmentDate) {
+        this.assignmentDate = assignmentDate;
+    }
+
+    public LocalDate getExpectedCompletionDate() {
+        return expectedCompletionDate;
+    }
+
+    public void setExpectedCompletionDate(LocalDate expectedCompletionDate) {
+        this.expectedCompletionDate = expectedCompletionDate;
+    }
+
+    public BigDecimal getExpectedHours() {
+        return expectedHours;
+    }
+
+    public void setExpectedHours(BigDecimal expectedHours) {
+        this.expectedHours = expectedHours;
+    }
+
+    public LocalDate getActualCompletionDate() {
+        return actualCompletionDate;
+    }
+
+    public void setActualCompletionDate(LocalDate actualCompletionDate) {
+        this.actualCompletionDate = actualCompletionDate;
+    }
+
+    public BigDecimal getActualHours() {
+        return actualHours;
+    }
+
+    public void setActualHours(BigDecimal actualHours) {
+        this.actualHours = actualHours;
+    }
+
+    public BigDecimal getHoursFee() {
+        return hoursFee;
+    }
+
+    public void setHoursFee(BigDecimal hoursFee) {
+        this.hoursFee = hoursFee;
+    }
+
+    public BigDecimal getEventFee() {
+        return eventFee;
+    }
+
+    public void setEventFee(BigDecimal eventFee) {
+        this.eventFee = eventFee;
+    }
+
+    public BigDecimal getTotalFee() {
+        return totalFee;
+    }
+
+    public void setTotalFee(BigDecimal totalFee) {
+        this.totalFee = totalFee;
+    }
+
+    public String getFeeDescription() {
+        return feeDescription;
+    }
+
+    public void setFeeDescription(String feeDescription) {
+        this.feeDescription = feeDescription;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public BigDecimal getServiceFee() {
+        return serviceFee;
+    }
+
+    public void setServiceFee(BigDecimal serviceFee) {
+        this.serviceFee = serviceFee;
+    }
+
+    public BigDecimal getPageFee() {
+        return pageFee;
+    }
+
+    public void setPageFee(BigDecimal pageFee) {
+        this.pageFee = pageFee;
+    }
+
+    public BigDecimal getItemFee() {
+        return itemFee;
+    }
+
+    public void setItemFee(BigDecimal itemFee) {
+        this.itemFee = itemFee;
+    }
+
+    public BigDecimal getCustomFee() {
+        return customFee;
+    }
+
+    public void setCustomFee(BigDecimal customFee) {
+        this.customFee = customFee;
+    }
+
+    public String getTaxType() {
+        return taxType;
+    }
+
+    public void setTaxType(String taxType) {
+        this.taxType = taxType;
+    }
+
+    public BigDecimal getTaxRate() {
+        return taxRate;
+    }
+
+    public void setTaxRate(BigDecimal taxRate) {
+        this.taxRate = taxRate;
+    }
+
+    public BigDecimal getWithholdingTax() {
+        return withholdingTax;
+    }
+
+    public void setWithholdingTax(BigDecimal withholdingTax) {
+        this.withholdingTax = withholdingTax;
+    }
+
+    public BigDecimal getSalesTax() {
+        return salesTax;
+    }
+
+    public void setSalesTax(BigDecimal salesTax) {
+        this.salesTax = salesTax;
+    }
+
+    public BigDecimal getPreTaxAmount() {
+        return preTaxAmount;
+    }
+
+    public void setPreTaxAmount(BigDecimal preTaxAmount) {
+        this.preTaxAmount = preTaxAmount;
+    }
+
+    public String getIsWithheld() {
+        return isWithheld;
+    }
+
+    public void setIsWithheld(String isWithheld) {
+        this.isWithheld = isWithheld;
+    }
+
+    public BigDecimal getTotalInvoiced() {
+        return totalInvoiced;
+    }
+
+    public void setTotalInvoiced(BigDecimal totalInvoiced) {
+        this.totalInvoiced = totalInvoiced;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public BigDecimal getExchangeRate() {
+        return exchangeRate;
+    }
+
+    public void setExchangeRate(BigDecimal exchangeRate) {
+        this.exchangeRate = exchangeRate;
+    }
+
+    public BigDecimal getTotalInNtd() {
+        return totalInNtd;
+    }
+
+    public void setTotalInNtd(BigDecimal totalInNtd) {
+        this.totalInNtd = totalInNtd;
+    }
+
+    public String getIsForeignCurrencyReceived() {
+        return isForeignCurrencyReceived;
+    }
+
+    public void setIsForeignCurrencyReceived(String isForeignCurrencyReceived) {
+        this.isForeignCurrencyReceived = isForeignCurrencyReceived;
+    }
+
+    public String getInvoiceRequestNo() {
+        return invoiceRequestNo;
+    }
+
+    public void setInvoiceRequestNo(String invoiceRequestNo) {
+        this.invoiceRequestNo = invoiceRequestNo;
+    }
+
+    public LocalDate getReceiptDate() {
+        return receiptDate;
+    }
+
+    public void setReceiptDate(LocalDate receiptDate) {
+        this.receiptDate = receiptDate;
+    }
+
+    public LocalDate getInvoiceDate() {
+        return invoiceDate;
+    }
+
+    public void setInvoiceDate(LocalDate invoiceDate) {
+        this.invoiceDate = invoiceDate;
+    }
+
+    public LocalDate getPaymentReceivedDate() {
+        return paymentReceivedDate;
+    }
+
+    public void setPaymentReceivedDate(LocalDate paymentReceivedDate) {
+        this.paymentReceivedDate = paymentReceivedDate;
+    }
+
+    public String getInvoiceNo() {
+        return invoiceNo;
+    }
+
+    public void setInvoiceNo(String invoiceNo) {
+        this.invoiceNo = invoiceNo;
+    }
+
+    public String getVoucherNo() {
+        return voucherNo;
+    }
+
+    public void setVoucherNo(String voucherNo) {
+        this.voucherNo = voucherNo;
+    }
+
+    public BigDecimal getActualReceived() {
+        return actualReceived;
+    }
+
+    public void setActualReceived(BigDecimal actualReceived) {
+        this.actualReceived = actualReceived;
+    }
+
+    public String getInvoiceNote() {
+        return invoiceNote;
+    }
+
+    public void setInvoiceNote(String invoiceNote) {
+        this.invoiceNote = invoiceNote;
+    }
 }
