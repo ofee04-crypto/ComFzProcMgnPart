@@ -7,7 +7,31 @@
 
     <div class="container mt-4 mb-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 th:text="${isEdit ? '案件詳細資料' : '新增案件'}">案件詳細資料</h2>
+        <div>
+          <h2
+            th:text="${isEdit ? '案件詳細資料' : '新增案件'}"
+            class="d-inline"
+          >
+            案件詳細資料
+          </h2>
+          <span
+            id="balanceDisplay"
+            class="ms-3 badge bg-primary-subtle text-dark border border-primary-subtle fw-bold"
+            style="font-size: 1rem; vertical-align: middle; display: inline"
+          ></span>
+        </div>
+
+        <!-- 續約按鈕 (新增模式) -->
+        <button
+          type="button"
+          class="btn btn-primary fw-bold"
+          id="renewBtn"
+          onclick="handleRenew()"
+          th:if="${!isEdit}"
+        >
+          <i class="bi bi-arrow-repeat"></i> 新約/續約
+        </button>
+
         <!-- 編輯模式下顯示編輯按鈕 -->
         <button
           type="button"
@@ -36,6 +60,7 @@
             type="text"
             class="form-control lockable border-danger-subtle"
             th:field="*{contractNo}"
+            placeholder="合約PTS案號"
             required
           />
         </div>
@@ -67,12 +92,12 @@
         </div>
 
         <div class="col-md-2">
-          <label class="form-label fw-bold">合約金額-NTD</label>
+          <label class="form-label fw-bold">合約單價-NTD</label>
           <input
             type="number"
-            step="160000"
+            step="1"
             class="form-control lockable"
-            th:field="*{contractAmount}"
+            th:field="*{contractUnitPrice}"
           />
         </div>
         <div class="col-md-2">
@@ -82,6 +107,16 @@
             step="1"
             class="form-control lockable"
             th:field="*{totalContractHours}"
+          />
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label fw-bold">合約餘額-NTD</label>
+          <input
+            type="number"
+            step="1"
+            class="form-control lockable"
+            th:field="*{contractAmount}"
           />
         </div>
         <div class="col-md-2">
@@ -101,7 +136,8 @@
         <hr class="mt-4 mb-2 border-secondary" />
         <div class="d-flex align-items-center justify-content-between">
           <h5 class="fw-bold text-dark mb-0">
-            <i class="bi bi-currency-dollar me-2"></i>合約收款與憑證-配合PTS
+            <i class="bi bi-currency-dollar me-2"></i
+            >合約憑證-新增母案時，依PTS資料建立
           </h5>
           <button
             class="btn btn-sm btn-warning collapsed"
@@ -130,7 +166,7 @@
               <label class="form-label fw-bold">實際收款</label>
               <input
                 type="number"
-                step="1000"
+                step="1"
                 class="form-control lockable"
                 th:field="*{actualReceived}"
               />
@@ -208,7 +244,7 @@
             type="text"
             class="form-control lockable border-danger-subtle"
             th:field="*{caseFileNo}"
-            placeholder="合約母案請輸入A"
+            placeholder="母案填A, IP事件填案號, 其他自訂"
             required
           />
         </div>
@@ -253,7 +289,7 @@
           <textarea
             class="form-control lockable"
             th:field="*{taskDescription}"
-            rows="2"
+            rows="1"
           ></textarea>
         </div>
 
@@ -330,7 +366,7 @@
           <label class="form-label fw-bold">事件費用-NTD</label>
           <input
             type="number"
-            step="1000"
+            step="1"
             class="form-control lockable"
             th:field="*{eventFee}"
           />
@@ -342,7 +378,7 @@
           >
           <input
             type="number"
-            step="1000"
+            step="1"
             class="form-control lockable border-success-subtle"
             th:field="*{totalFee}"
             readonly
@@ -373,10 +409,52 @@
       const isEdit = /*[[${isEdit}]]*/ false;
       const contractsJsonData =
         /*[[${contractsJson != null ? contractsJson : '{}'}]]*/ "{}";
+      // 新約/續約 邏輯
+      function handleRenew() {
+        const contractInput = document.getElementById("contractNo");
+        const priceInput = document.getElementById("contractUnitPrice");
+        const amountInput = document.getElementById("contractAmount");
+
+        let currentBalance = 0;
+        let original = "";
+
+        if (contractInput && contractInput.value) {
+          original = contractInput.value.trim();
+
+          // 1. 從快取資料中安全取出當前合約餘額
+          try {
+            const contractsMap = JSON.parse(contractsJsonData);
+            if (contractsMap[original]) {
+              currentBalance =
+                Math.round(
+                  parseFloat(contractsMap[original].contractBalance),
+                ) || 0;
+            }
+          } catch (e) {
+            console.error("續約解析餘額失敗", e);
+          }
+
+          // 2. 遞增合約編號末尾兩碼
+          const match = original.match(/(\d{2})$/);
+          if (match) {
+            let num = parseInt(match[1], 10) + 1;
+            contractInput.value =
+              original.slice(0, -2) + String(num).padStart(2, "0");
+          }
+        }
+
+        // 3. 加總計算：合約總額 = 合約單價 + 歷史合約餘額
+        if (priceInput && amountInput) {
+          const price = parseFloat(priceInput.value) || 0;
+          amountInput.value = price + currentBalance;
+        }
+
+        calculateAllFees();
+      }
 
       // 自動計算各項費用
       function calculateAllFees() {
-        const amountStr = document.getElementById("contractAmount").value;
+        const amountStr = document.getElementById("contractUnitPrice").value;
         const hoursStr = document.getElementById("totalContractHours").value;
         const actHoursStr = document.getElementById("actualHours").value;
         const eventFeeStr = document.getElementById("eventFee").value;
@@ -472,6 +550,7 @@
         // 綁定所有會影響費用的輸入事件
         const inputs = [
           "contractAmount",
+          "contractUnitPrice",
           "totalContractHours",
           "actualHours",
           "eventFee",
@@ -507,8 +586,22 @@
             // 監聽合約編號輸入變更
             contractInput.addEventListener("input", function () {
               const selectedNo = contractInput.value;
+              const balanceEl = document.getElementById("balanceDisplay");
+              if (balanceEl) {
+                balanceEl.innerText = "";
+                balanceEl.style.display = "none"; // 恢復隱藏
+              }
+
               if (contractsMap[selectedNo]) {
                 const data = contractsMap[selectedNo];
+                if (balanceEl && data.contractBalance !== undefined) {
+                  const formattedBalance = Math.round(
+                    data.contractBalance,
+                  ).toLocaleString();
+                  balanceEl.innerText =
+                    "💰 合約餘額: " + formattedBalance + " 元";
+                  balanceEl.style.display = "inline-block"; // 顯示金額
+                }
                 if (document.getElementById("appName") && data.appName)
                   document.getElementById("appName").value = data.appName;
                 if (document.getElementById("applicant") && data.applicant)
@@ -519,6 +612,12 @@
                 )
                   document.getElementById("contractNotes").value =
                     data.contractNotes;
+                if (
+                  document.getElementById("contractUnitPrice") &&
+                  data.contractUnitPrice
+                )
+                  document.getElementById("contractUnitPrice").value =
+                    data.contractUnitPrice;
                 if (
                   document.getElementById("contractAmount") &&
                   data.contractAmount

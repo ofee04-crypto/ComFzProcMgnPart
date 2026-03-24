@@ -13,6 +13,7 @@ public class PatentCase {
     private String appNameEn;
     private String originalCaseName;
     private String contractNotes;
+    private BigDecimal contractUnitPrice; // 合約單價
     private BigDecimal contractAmount;
     private BigDecimal totalContractHours;
     private BigDecimal hourlyRate;
@@ -73,6 +74,7 @@ public class PatentCase {
     private String invoiceNote; // 請款備註
 
     private String notes;
+    private BigDecimal contractBalance; // 合約餘額 (暫存計算)
 
     public PatentCase() {
     }
@@ -475,5 +477,21 @@ public class PatentCase {
 
     public void setInvoiceNote(String invoiceNote) {
         this.invoiceNote = invoiceNote;
+    }
+
+    public BigDecimal getContractBalance() {
+        return contractBalance;
+    }
+
+    public void setContractBalance(BigDecimal contractBalance) {
+        this.contractBalance = contractBalance;
+    }
+
+    public BigDecimal getContractUnitPrice() {
+        return contractUnitPrice;
+    }
+
+    public void setContractUnitPrice(BigDecimal contractUnitPrice) {
+        this.contractUnitPrice = contractUnitPrice;
     }
 }

@@ -50,11 +50,23 @@ public class PatentCaseController {
         model.addAttribute("username", session.getAttribute("loggedInUser"));
         
         try {
+            java.util.Map<String, java.math.BigDecimal> feesSums = new java.util.HashMap<>();
             java.util.Map<String, PatentCase> uniqueContracts = new java.util.HashMap<>();
+            
             for (PatentCase pc : service.getAllCases()) {
-                if (pc.getContractNo() != null && !pc.getContractNo().trim().isEmpty()) {
-                    uniqueContracts.put(pc.getContractNo(), pc);
+                String cNo = pc.getContractNo();
+                if (cNo != null && !cNo.trim().isEmpty()) {
+                    java.math.BigDecimal total = pc.getTotalFee() != null ? pc.getTotalFee() : java.math.BigDecimal.ZERO;
+                    feesSums.put(cNo, feesSums.getOrDefault(cNo, java.math.BigDecimal.ZERO).add(total));
+                    uniqueContracts.put(cNo, pc);
                 }
+            }
+            
+            for (String cNo : uniqueContracts.keySet()) {
+                PatentCase pc = uniqueContracts.get(cNo);
+                java.math.BigDecimal sum = feesSums.get(cNo);
+                java.math.BigDecimal amount = pc.getContractAmount() != null ? pc.getContractAmount() : java.math.BigDecimal.ZERO;
+                pc.setContractBalance(amount.subtract(sum));
             }
             String contractsJson = objectMapper.writeValueAsString(uniqueContracts);
             model.addAttribute("contractsJson", contractsJson);
@@ -79,7 +91,7 @@ public class PatentCaseController {
         if (patentCase.getContractAmount() != null && patentCase.getTotalContractHours() != null
                 && patentCase.getTotalContractHours().compareTo(java.math.BigDecimal.ZERO) != 0) {
             hourlyRate = patentCase.getContractAmount()
-                    .divide(patentCase.getTotalContractHours(), 1, java.math.RoundingMode.HALF_UP);
+                    .divide(patentCase.getTotalContractHours(), 0, java.math.RoundingMode.HALF_UP);
             patentCase.setHourlyRate(hourlyRate);
         }
 
