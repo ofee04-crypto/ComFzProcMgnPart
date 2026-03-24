@@ -79,3 +79,6 @@ config.js
 # 6. 特殊保留檔案
 # =====================================
 !**/.gitkeep
+backend/dist/
+backend/.jdk-local/jdk21.zip
+backend/build_log.txt
