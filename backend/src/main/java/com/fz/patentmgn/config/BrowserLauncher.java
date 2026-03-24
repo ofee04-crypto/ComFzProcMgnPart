@@ -14,9 +14,12 @@ public class BrowserLauncher implements ApplicationListener<ApplicationReadyEven
 
     private static final Logger log = LoggerFactory.getLogger(BrowserLauncher.class);
 
+    @org.springframework.beans.factory.annotation.Value("${server.port:8080}")
+    private String port;
+
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        String url = "http://localhost:8080/";
+        String url = "http://localhost:" + port + "/";
         try {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 log.info("伺服器準備完畢，嘗試啟動預設瀏覽器導向至: {}", url);
