@@ -46,8 +46,9 @@ public class JsonPatentCaseRepository {
         try {
             File file = new File(dataFilePath);
             if (file.exists() && file.length() > 0) {
-                casesCache = objectMapper.readValue(file, new TypeReference<List<PatentCase>>() {});
-                log.info("已從 {} 載入 {} 筆案件資料", dataFilePath, casesCache.size());
+                casesCache = objectMapper.readValue(file, new TypeReference<List<PatentCase>>() {
+                });
+                log.info("Load cases {} from {}s", casesCache.size(), dataFilePath);
             } else {
                 File parent = file.getParentFile();
                 if (parent != null && !parent.exists()) {
@@ -55,11 +56,11 @@ public class JsonPatentCaseRepository {
                 }
                 file.createNewFile();
                 saveToFile();
-                log.info("建立全新的資料檔: {}", dataFilePath);
+                log.info("Build new file: {}", dataFilePath);
             }
         } catch (IOException e) {
-            log.error("無法載入資料檔案", e);
-            throw new DataWriteException("系統無法初始化儲存庫檔案", e);
+            log.error("Failed to load data file", e);
+            throw new DataWriteException("Failed to initialize repository file", e);
         } finally {
             lock.writeLock().unlock();
         }
@@ -69,8 +70,8 @@ public class JsonPatentCaseRepository {
         try {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(dataFilePath), casesCache);
         } catch (IOException e) {
-            log.error("寫入資料失敗", e);
-            throw new DataWriteException("無法將改變寫入檔案", e);
+            log.error("Failed to write data file", e);
+            throw new DataWriteException("Failed to write changes to file", e);
         }
     }
 

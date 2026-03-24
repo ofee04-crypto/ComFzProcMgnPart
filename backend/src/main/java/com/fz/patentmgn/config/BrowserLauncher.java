@@ -22,14 +22,14 @@ public class BrowserLauncher implements ApplicationListener<ApplicationReadyEven
         String url = "http://localhost:" + port + "/";
         try {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                log.info("伺服器準備完畢，嘗試啟動預設瀏覽器導向至: {}", url);
+                log.info("Server Ready. Opening Browser to: {}", url);
                 Desktop.getDesktop().browse(new URI(url));
             } else {
-                log.info("Desktop API 未支援，嘗試以 native CMD 喚醒瀏覽器");
+                log.info("Desktop API not supported, trying to open browser with native CMD");
                 Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
             }
         } catch (Exception e) {
-            log.error("無法自動開啟瀏覽器，請手動打開 {}", url, e);
+            log.error("Failed to open browser, please open {} manually", url, e);
         }
     }
 }

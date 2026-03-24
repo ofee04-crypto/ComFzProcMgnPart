@@ -44,8 +44,9 @@ public class JsonUserRepository {
         try {
             File file = new File(dataFilePath);
             if (file.exists() && file.length() > 0) {
-                usersCache = objectMapper.readValue(file, new TypeReference<List<User>>() {});
-                log.info("已從 {} 載入 {} 筆使用者資料", dataFilePath, usersCache.size());
+                usersCache = objectMapper.readValue(file, new TypeReference<List<User>>() {
+                });
+                log.info("Load users from {} with {} rows", dataFilePath, usersCache.size());
             } else {
                 File parent = file.getParentFile();
                 if (parent != null && !parent.exists()) {
@@ -55,11 +56,11 @@ public class JsonUserRepository {
                 // Create default admin user
                 usersCache.add(new User("admin", "123456", "ADMIN"));
                 saveToFile();
-                log.info("建立預設使用者帳號: admin / 123456 (寫入至 {})", dataFilePath);
+                log.info("Build default user: admin / 123456 (write to {})", dataFilePath);
             }
         } catch (IOException e) {
-            log.error("無法載入使用者資料檔案", e);
-            throw new DataWriteException("系統無法初始化使用者檔案", e);
+            log.error("Failed to load data file", e);
+            throw new DataWriteException("Failed to initialize repository file", e);
         } finally {
             lock.writeLock().unlock();
         }
@@ -69,8 +70,8 @@ public class JsonUserRepository {
         try {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(dataFilePath), usersCache);
         } catch (IOException e) {
-            log.error("寫入資料失敗", e);
-            throw new DataWriteException("無法將使用者改變寫入檔案", e);
+            log.error("Failed to write data file", e);
+            throw new DataWriteException("Failed to write changes to file", e);
         }
     }
 
