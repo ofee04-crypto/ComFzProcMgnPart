@@ -100,6 +100,8 @@
             step="1"
             class="form-control lockable"
             th:field="*{contractUnitPrice}"
+            style="background-color: #f8f9fa"
+            readonly
           />
         </div>
         <div class="col-md-2">
@@ -109,6 +111,8 @@
             step="1"
             class="form-control lockable"
             th:field="*{totalContractHours}"
+            style="background-color: #f8f9fa"
+            readonly
           />
         </div>
 
@@ -119,8 +123,17 @@
             step="1"
             class="form-control lockable"
             th:field="*{contractAmount}"
+            style="background-color: #f8f9fa"
+            readonly
           />
         </div>
+        <!-- 隱藏欄位儲存初始餘額 -->
+        <input
+          type="hidden"
+          th:field="*{contractBalance}"
+          id="contractBalance"
+        />
+        <!-- 隱藏欄位儲存初始餘額 -->
         <div class="col-md-2">
           <label class="form-label fw-bold text-success"
             >小時費用-NTD(自動)</label
@@ -390,6 +403,18 @@
           />
         </div>
 
+        <div class="col-md-2">
+          <label class="form-label fw-bold text-success">結餘-NTD(自動)</label>
+          <input
+            type="number"
+            step="1"
+            class="form-control lockable border-success-subtle"
+            th:field="*{balanceAfter}"
+            readonly
+            style="background-color: #f8f9fa"
+          />
+        </div>
+
         <div class="col-md-12">
           <label class="form-label fw-bold">任務備註</label>
           <textarea
@@ -483,16 +508,35 @@
             currentBalance =
               Math.round(parseFloat(contractsMap[original].contractBalance)) ||
               0;
+            // 同步隱藏欄位供計算使用
+            const cbInput = document.getElementById("contractBalance");
+            if (cbInput) cbInput.value = currentBalance;
+          }
+          // 3. 加總計算：合約總額 = 合約單價 + 歷史合約餘額
+          if (priceInput && amountInput) {
+            const price = parseFloat(priceInput.value) || 0;
+            amountInput.value = price + currentBalance;
           }
         } catch (e) {
           console.error("續約解析餘額失敗", e);
         }
 
-        // 3. 加總計算：合約總額 = 合約單價 + 歷史合約餘額
-        if (priceInput && amountInput) {
-          const price = parseFloat(priceInput.value) || 0;
-          amountInput.value = price + currentBalance;
-        }
+        // 清空 憑證相關欄位
+        const clearIds = [
+          "invoiceRequestNo",
+          "actualReceived",
+          "receiptDate",
+          "paymentReceivedDate",
+          "invoiceDate",
+          "invoiceNo",
+        ];
+        clearIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.value = "";
+        });
+
+        const withheldSelect = document.getElementById("isWithheld");
+        if (withheldSelect) withheldSelect.value = "否";
 
         calculateAllFees();
         if (eventInput) {
@@ -554,6 +598,15 @@
         // const totalFeeVal = hoursFee + eventFee + serviceFee + pageFee + itemFee + customFee;
         if (totalFeeInput) {
           totalFeeInput.value = Math.round(totalFeeVal * 100) / 100;
+        }
+
+        // 3.1.1 結餘 = 合約餘額 - 總費用
+        const startBalance =
+          parseFloat(document.getElementById("contractBalance")?.value) || 0;
+        const balanceAfterInput = document.getElementById("balanceAfter");
+        if (balanceAfterInput) {
+          balanceAfterInput.value =
+            Math.round((startBalance - totalFeeVal) * 100) / 100;
         }
         // 3.2 收費合計 = 服務費 + 超頁費 + 超項費 + 自定義費
 
@@ -652,6 +705,9 @@
                   balanceEl.innerText =
                     "💰 合約餘額: " + formattedBalance + " 元";
                   balanceEl.style.display = "inline-block"; // 顯示金額
+
+                  const cbInput = document.getElementById("contractBalance");
+                  if (cbInput) cbInput.value = data.contractBalance || 0;
                 }
                 if (document.getElementById("appName") && data.appName)
                   document.getElementById("appName").value = data.appName;

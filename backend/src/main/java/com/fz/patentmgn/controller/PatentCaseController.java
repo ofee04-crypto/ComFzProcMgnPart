@@ -115,6 +115,13 @@ public class PatentCaseController {
             patentCase.setTotalFee(null);
         }
 
+        // Auto-calculate balanceAfter: contractBalance - totalFee
+        if (patentCase.getContractBalance() != null && patentCase.getTotalFee() != null) {
+            patentCase.setBalanceAfter(patentCase.getContractBalance().subtract(patentCase.getTotalFee()));
+        } else {
+            patentCase.setBalanceAfter(null);
+        }
+
         service.saveCase(patentCase);
         
         if (isNew) {
