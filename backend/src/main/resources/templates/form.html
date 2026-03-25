@@ -9,19 +9,21 @@
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2
-            th:text="${isEdit ? '事件詳細資料' : '新增合約'}"
+            th:text="${isEdit ? '事件詳細資料' : '新增案件'}"
             class="d-inline"
           >
             事件詳細資料
           </h2>
+          <!-- 合約餘額顯示 -->
           <span
             id="balanceDisplay"
             class="ms-3 badge bg-primary-subtle text-dark border border-primary-subtle fw-bold"
-            style="font-size: 1rem; vertical-align: middle; display: inline"
+            style="font-size: 1rem; vertical-align: middle; display: none"
           ></span>
         </div>
 
-        <!-- 續約按鈕 (新增模式) -->
+        <!-- 新約/續約按鈕 -->
+
         <button
           type="button"
           class="btn btn-primary fw-bold"
@@ -32,7 +34,7 @@
           <i class="bi bi-arrow-repeat"></i> 新約/續約
         </button>
 
-        <!-- 編輯模式下顯示編輯按鈕 -->
+        <!-- 詳細資料模式下顯示編輯按鈕 -->
         <button
           type="button"
           class="btn btn-warning fw-bold"
@@ -111,7 +113,7 @@
         </div>
 
         <div class="col-md-2">
-          <label class="form-label fw-bold">合約餘額-NTD</label>
+          <label class="form-label fw-bold">合約原額-NTD</label>
           <input
             type="number"
             step="1"
@@ -134,7 +136,7 @@
         </div>
 
         <hr class="mt-4 mb-1 border-secondary" />
-        <div class="bg-light p-3 rounded border mb-3">
+        <div class="bg-secondary-subtle p-3 rounded border mb-3">
           <div class="d-flex align-items-center justify-content-between">
             <h5 class="fw-bold text-dark mb-0">
               <i class="bi bi-currency-dollar me-2"></i
@@ -246,7 +248,7 @@
             type="text"
             class="form-control lockable border-danger-subtle"
             th:field="*{caseFileNo}"
-            placeholder="母案填A, IP事件填案號, 其他自訂"
+            placeholder="母案自動, IP事件填案號, 其他自訂"
             required
           />
         </div>
@@ -415,34 +417,75 @@
       function handleRenew() {
         const contractInput = document.getElementById("contractNo");
         const priceInput = document.getElementById("contractUnitPrice");
+        const hoursInput = document.getElementById("totalContractHours");
         const amountInput = document.getElementById("contractAmount");
+        const eventInput = document.getElementById("caseFileNo");
 
         let currentBalance = 0;
         let original = "";
 
-        if (contractInput && contractInput.value) {
-          original = contractInput.value.trim();
+        original = contractInput.value.trim();
 
-          // 1. 從快取資料中安全取出當前合約餘額
-          try {
-            const contractsMap = JSON.parse(contractsJsonData);
-            if (contractsMap[original]) {
-              currentBalance =
-                Math.round(
-                  parseFloat(contractsMap[original].contractBalance),
-                ) || 0;
-            }
-          } catch (e) {
-            console.error("續約解析餘額失敗", e);
+        // 1. 彈出對話框修改合約編號
+        let newContractNo = "";
+        while (true) {
+          newContractNo = window.prompt("請輸入新的合約編號：", original);
+          if (newContractNo === null) {
+            return; // 使用者按下取消，不執行後續動作
           }
+          newContractNo = newContractNo.trim();
+          if (newContractNo === "") {
+            alert("合約編號不可為空！");
+            continue;
+          }
+          if (newContractNo === original) {
+            alert("新合約編號不可與原合約編號相同，請重新輸入。");
+            continue;
+          }
+          contractInput.value = newContractNo; // 套用新編號
+          break; // 通過驗證，跳出迴圈
+        }
 
-          // 2. 遞增合約編號末尾兩碼
-          const match = original.match(/(\d{2})$/);
-          if (match) {
-            let num = parseInt(match[1], 10) + 1;
-            contractInput.value =
-              original.slice(0, -2) + String(num).padStart(2, "0");
+        let newContractUnitPrice = 0;
+        while (true) {
+          newContractUnitPrice = window.prompt("請輸入新的合約單價：");
+          if (newContractUnitPrice === null) {
+            return; // 使用者取消，不執行後續動作
           }
+          newContractUnitPrice = newContractUnitPrice.trim();
+          if (newContractUnitPrice === "") {
+            alert("合約單價不可為空！");
+            continue;
+          }
+          priceInput.value = newContractUnitPrice; // 套用新金額
+          break;
+        }
+
+        let newtotalContractHours = 0;
+        while (true) {
+          newtotalContractHours = window.prompt("請輸入新的合約總時數：");
+          if (newtotalContractHours === null) {
+            return; // 使用者取消，不執行後續動作
+          }
+          newtotalContractHours = newtotalContractHours.trim();
+          if (newtotalContractHours === "") {
+            alert("合約時數不可為空！");
+            continue;
+          }
+          hoursInput.value = newtotalContractHours; // 套用新時數
+          break;
+        }
+
+        // 2. 從快取資料中安全取出當前合約餘額
+        try {
+          const contractsMap = JSON.parse(contractsJsonData);
+          if (contractsMap[original]) {
+            currentBalance =
+              Math.round(parseFloat(contractsMap[original].contractBalance)) ||
+              0;
+          }
+        } catch (e) {
+          console.error("續約解析餘額失敗", e);
         }
 
         // 3. 加總計算：合約總額 = 合約單價 + 歷史合約餘額
@@ -452,6 +495,13 @@
         }
 
         calculateAllFees();
+        if (eventInput) {
+          eventInput.value = "MainCase"; // 套用合約母案預設代碼
+        }
+        // 4. 自動打開「合約憑證」收合區塊 (僅在收合時點擊)
+        document
+          .querySelector('[data-bs-target="#receiptsSection"].collapsed')
+          ?.click();
       }
 
       // 自動計算各項費用
@@ -460,7 +510,6 @@
         const hoursStr = document.getElementById("totalContractHours").value;
         const actHoursStr = document.getElementById("actualHours").value;
         const eventFeeStr = document.getElementById("eventFee").value;
-
         const rateInput = document.getElementById("hourlyRate");
         const hoursFeeInput = document.getElementById("hoursFee");
         const totalFeeInput = document.getElementById("totalFee");
