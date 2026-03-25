@@ -1,10 +1,16 @@
 package com.fz.patentmgn.controller;
 
 import com.fz.patentmgn.model.PatentCase;
+import com.fz.patentmgn.service.ExcelExportService;
 import com.fz.patentmgn.service.LogService;
 import com.fz.patentmgn.service.PatentCaseService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
@@ -18,14 +24,19 @@ public class PatentCaseController {
 
     private final PatentCaseService service;
     private final LogService logService;
+    private final ExcelExportService excelExportService;
     private final com.fasterxml.jackson.databind.ObjectMapper objectMapper;
+
     
     @Autowired
     private ApplicationContext context;
 
-    public PatentCaseController(PatentCaseService service, LogService logService, com.fasterxml.jackson.databind.ObjectMapper objectMapper) {
+    public PatentCaseController(PatentCaseService service, LogService logService, 
+                                ExcelExportService excelExportService,
+                                com.fasterxml.jackson.databind.ObjectMapper objectMapper) {
         this.service = service;
         this.logService = logService;
+        this.excelExportService = excelExportService;
         this.objectMapper = objectMapper;
     }
 
@@ -42,6 +53,33 @@ public class PatentCaseController {
         model.addAttribute("username", session.getAttribute("loggedInUser"));
         return "index";
     }
+
+    @GetMapping("/export")
+    public ResponseEntity<InputStreamResource> export(
+            @RequestParam(required = false) String keyword, 
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd") java.time.LocalDate startDate,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd") java.time.LocalDate endDate,
+            HttpSession session) {
+        
+        java.util.List<PatentCase> cases = service.search(keyword, startDate, endDate);
+        java.io.ByteArrayInputStream in = excelExportService.exportCases(cases);
+        if (in == null) {
+            return ResponseEntity.status(500).build();
+        }
+        
+        String username = (String) session.getAttribute("loggedInUser");
+        logService.recordLog(username, "匯出 Excel 報表 (關鍵字: " + keyword + ")");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=patent_cases.xlsx");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(new InputStreamResource(in));
+    }
+
 
     @GetMapping("/create")
     public String createForm(Model model, HttpSession session) {
