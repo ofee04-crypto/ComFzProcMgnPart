@@ -14,6 +14,6 @@ if not exist ".mvn-local\apache-maven-3.9.6\bin\mvn.cmd" (
 )
 
 set SERVER_PORT=8081
-call ".mvn-local\apache-maven-3.9.6\bin\mvn.cmd" spring-boot:run
+call ".mvn-local\apache-maven-3.9.6\bin\mvn.cmd" spring-boot:run -Dspring-boot.run.arguments=--server.port=8081
 echo Development Server is running on http://localhost:8081
 pause
