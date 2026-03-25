@@ -1,6 +1,6 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="~{fragments/nav :: head('案件詳細資料')}"></head>
+  <head th:replace="~{fragments/nav :: head('事件資料管理')}"></head>
 
   <body>
     <div th:replace="~{fragments/nav :: navbar}"></div>
@@ -9,10 +9,10 @@
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2
-            th:text="${isEdit ? '案件詳細資料' : '新增案件'}"
+            th:text="${isEdit ? '事件詳細資料' : '新增合約'}"
             class="d-inline"
           >
-            案件詳細資料
+            事件詳細資料
           </h2>
           <span
             id="balanceDisplay"
@@ -133,88 +133,89 @@
           />
         </div>
 
-        <hr class="mt-4 mb-2 border-secondary" />
-        <div class="d-flex align-items-center justify-content-between">
-          <h5 class="fw-bold text-dark mb-0">
-            <i class="bi bi-currency-dollar me-2"></i
-            >合約憑證-新增母案時，依PTS資料建立
-          </h5>
-          <button
-            class="btn btn-sm btn-warning collapsed"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#receiptsSection"
-            aria-expanded="false"
-            aria-controls="receiptsSection"
-          >
-            <i class="bi bi-arrows-expand"></i> 收合/展開
-          </button>
-        </div>
+        <hr class="mt-4 mb-1 border-secondary" />
+        <div class="bg-light p-3 rounded border mb-3">
+          <div class="d-flex align-items-center justify-content-between">
+            <h5 class="fw-bold text-dark mb-0">
+              <i class="bi bi-currency-dollar me-2"></i
+              >合約憑證-新增母案時必填，依PTS資料建立
+            </h5>
+            <button
+              class="btn btn-sm btn-warning collapsed"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#receiptsSection"
+              aria-expanded="false"
+              aria-controls="receiptsSection"
+            >
+              <i class="bi bi-arrows-expand"></i> 收合/展開
+            </button>
+          </div>
 
-        <div class="collapse" id="receiptsSection">
-          <div class="row g-3 mt-1">
-            <!-- 4. 收款與憑證 -->
-            <div class="col-md-3">
-              <label class="form-label fw-bold">請款單號</label>
-              <input
-                type="text"
-                class="form-control lockable"
-                th:field="*{invoiceRequestNo}"
-              />
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-bold">實際收款</label>
-              <input
-                type="number"
-                step="1"
-                class="form-control lockable"
-                th:field="*{actualReceived}"
-              />
-            </div>
-            <div class="col-md-6"></div>
-            <div class="col-md-3">
-              <label class="form-label fw-bold">收據日期</label>
-              <input
-                type="date"
-                class="form-control lockable"
-                th:field="*{receiptDate}"
-              />
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-bold">收款日期</label>
-              <input
-                type="date"
-                class="form-control lockable"
-                th:field="*{paymentReceivedDate}"
-              />
-            </div>
-            <div class="col-md-1">
-              <label class="form-label fw-bold">已收款</label>
-              <select class="form-select lockable" th:field="*{isWithheld}">
-                <option value="否">否</option>
-                <option value="是">是</option>
-              </select>
-            </div>
+          <div class="collapse" id="receiptsSection">
+            <div class="row g-3 mt-1">
+              <!-- 4. 收款與憑證 -->
+              <div class="col-md-3">
+                <label class="form-label fw-bold">請款單號</label>
+                <input
+                  type="text"
+                  class="form-control lockable"
+                  th:field="*{invoiceRequestNo}"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-bold">實際收款</label>
+                <input
+                  type="number"
+                  step="1"
+                  class="form-control lockable"
+                  th:field="*{actualReceived}"
+                />
+              </div>
+              <div class="col-md-6"></div>
+              <div class="col-md-3">
+                <label class="form-label fw-bold">收據日期</label>
+                <input
+                  type="date"
+                  class="form-control lockable"
+                  th:field="*{receiptDate}"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-bold">收款日期</label>
+                <input
+                  type="date"
+                  class="form-control lockable"
+                  th:field="*{paymentReceivedDate}"
+                />
+              </div>
+              <div class="col-md-1">
+                <label class="form-label fw-bold">已收款</label>
+                <select class="form-select lockable" th:field="*{isWithheld}">
+                  <option value="否">否</option>
+                  <option value="是">是</option>
+                </select>
+              </div>
 
-            <div class="col-md-5"></div>
-            <div class="col-md-3">
-              <label class="form-label fw-bold">發票日期</label>
-              <input
-                type="date"
-                class="form-control lockable"
-                th:field="*{invoiceDate}"
-              />
-            </div>
+              <div class="col-md-5"></div>
+              <div class="col-md-3">
+                <label class="form-label fw-bold">發票日期</label>
+                <input
+                  type="date"
+                  class="form-control lockable"
+                  th:field="*{invoiceDate}"
+                />
+              </div>
 
-            <div class="col-md-3">
-              <label class="form-label fw-bold">發票號碼</label>
-              <input
-                type="text"
-                class="form-control lockable"
-                th:field="*{invoiceNo}"
-              />
-            </div>
-            <!-- <div class="col-md-3">
+              <div class="col-md-3">
+                <label class="form-label fw-bold">發票號碼</label>
+                <input
+                  type="text"
+                  class="form-control lockable"
+                  th:field="*{invoiceNo}"
+                />
+              </div>
+              <!-- <div class="col-md-3">
           <label class="form-label fw-bold">立帳傳票號碼</label>
           <input
             type="text"
@@ -223,18 +224,19 @@
           />
         </div> -->
 
-            <div class="col-md-12">
-              <label class="form-label fw-bold">請款備註</label>
-              <textarea
-                class="form-control lockable"
-                th:field="*{invoiceNote}"
-                rows="1"
-              ></textarea>
+              <div class="col-md-12">
+                <label class="form-label fw-bold">請款備註</label>
+                <textarea
+                  class="form-control lockable"
+                  th:field="*{invoiceNote}"
+                  rows="1"
+                ></textarea>
+              </div>
             </div>
           </div>
         </div>
 
-        <hr class="mt-4 mb-1 border-secondary" />
+        <hr class="mt-1 mb-1 border-secondary" />
         <h5 class="fw-bold text-dark mb-0">
           <i class="bi bi-currency-dollar me-2"></i>事件資料
         </h5>
