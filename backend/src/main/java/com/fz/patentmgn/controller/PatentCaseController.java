@@ -146,19 +146,26 @@ public class PatentCaseController {
         }
 
         // Auto-calculate totalFee: hoursFee + eventFee
-        java.math.BigDecimal total = hoursFee;
+        java.math.BigDecimal total = java.math.BigDecimal.ZERO;
+        boolean hasFee = false;
+        if (patentCase.getHoursFee() != null) {
+            total = total.add(patentCase.getHoursFee());
+            hasFee = true;
+        }
         if (patentCase.getEventFee() != null) {
             total = total.add(patentCase.getEventFee());
+            hasFee = true;
         }
-        if (patentCase.getHoursFee() != null || patentCase.getEventFee() != null) {
+        if (hasFee) {
             patentCase.setTotalFee(total);
         } else {
             patentCase.setTotalFee(null);
         }
 
         // Auto-calculate balanceAfter: contractBalance - totalFee
-        if (patentCase.getContractBalance() != null && patentCase.getTotalFee() != null) {
-            patentCase.setBalanceAfter(patentCase.getContractBalance().subtract(patentCase.getTotalFee()));
+        if (patentCase.getContractBalance() != null) {
+            java.math.BigDecimal feeToSubtract = (patentCase.getTotalFee() != null) ? patentCase.getTotalFee() : java.math.BigDecimal.ZERO;
+            patentCase.setBalanceAfter(patentCase.getContractBalance().subtract(feeToSubtract));
         } else {
             patentCase.setBalanceAfter(null);
         }

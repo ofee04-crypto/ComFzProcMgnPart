@@ -55,8 +55,11 @@ public class JsonUserRepository {
                 file.createNewFile();
                 // Create default admin user
                 usersCache.add(new User("admin", "fz24616250", "ADMIN"));
+                usersCache.add(new User("miir", "miir", "ADMIN"));
+                usersCache.add(new User("accountant", "accountant", "MGN"));
+                usersCache.add(new User("user", "user", "USER"));
                 saveToFile();
-                log.info("Build default user: admin / fz24616250 (write to {})", dataFilePath);
+                log.info("Build default admin / accountant/ user  (write to {})", dataFilePath);
             }
         } catch (IOException e) {
             log.error("Failed to load data file", e);

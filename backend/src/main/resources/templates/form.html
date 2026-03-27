@@ -471,20 +471,20 @@
         try {
           contractsMap = JSON.parse(contractsJsonData);
         } catch (e) {
-          console.error("解析合約資料失敗", e);
+          console.error("解析合約資料失敗,請聯絡開發者", e);
         }
 
         // 0. 彈出對話框前先檢查合約備註中是否存在「續約自： [原合約編號]」
         // 若 TRUE 則表示該合約已經被續約過了
         if (original) {
           const searchKey = "續約自：" + original;
-          const alreadyRenewed = Object.values(contractsMap).some(pc => 
-            pc.contractNotes && pc.contractNotes.includes(searchKey)
+          const alreadyRenewed = Object.values(contractsMap).some(
+            (pc) => pc.contractNotes && pc.contractNotes.includes(searchKey),
           );
-          
+
           if (alreadyRenewed) {
-             alert("此合約已被續約過，請選擇最新的合約！");
-             return;
+            alert("此合約已被續約過，請選擇最新的合約！");
+            return;
           }
         }
         // 1. 彈出對話框修改合約編號
@@ -559,6 +559,8 @@
               Math.round(parseFloat(contractsMap[original].contractBalance)) ||
               0;
           }
+
+          calculateAllFees();
           // 3. 新合約預算 = 新單價 + 舊合約剩餘，並設為「起始可用餘額」
 
           if (priceInput && amountInput) {
@@ -572,8 +574,6 @@
         } catch (e) {
           console.error("續約解析餘額失敗", e);
         }
-
-        calculateAllFees();
 
         if (balanceAfterInput) {
           balanceAfterInput.value = amountInput.value;
