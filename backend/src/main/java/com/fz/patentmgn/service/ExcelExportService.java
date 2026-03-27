@@ -76,11 +76,11 @@ public class ExcelExportService {
 
     private Workbook loadTemplate() {
         // 1. 優先嘗試外部檔案 (方便在打包後，直接修改 temple 資料夾下的樣板)
-        java.io.File templeDir = new java.io.File("temple");
+        java.io.File templeDir = new java.io.File("template");
         if (!templeDir.exists()) {
             templeDir.mkdirs(); // 自動建立資料夾
         }
-        
+
         java.io.File externalFile = new java.io.File(templeDir, "export_template.xlsx");
         if (externalFile.exists()) {
             try (java.io.InputStream is = new java.io.FileInputStream(externalFile)) {

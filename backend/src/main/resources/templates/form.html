@@ -64,6 +64,7 @@
             th:field="*{contractNo}"
             placeholder="合約PTS案號"
             required
+            th:readonly="${isEdit and session.loggedInRole != 'ADMIN'}"
           />
         </div>
 
@@ -73,6 +74,7 @@
             type="text"
             class="form-control lockable"
             th:field="*{appName}"
+            th:readonly="${isEdit and session.loggedInRole != 'ADMIN'}"
           />
         </div>
         <div class="col-md-3">
@@ -81,6 +83,7 @@
             type="text"
             class="form-control lockable"
             th:field="*{applicant}"
+            th:readonly="${isEdit and session.loggedInRole != 'ADMIN'}"
           />
         </div>
 
@@ -90,6 +93,7 @@
             class="form-control lockable"
             th:field="*{contractNotes}"
             rows="1"
+            th:readonly="${isEdit and session.loggedInRole != 'ADMIN'}"
           ></textarea>
         </div>
 
@@ -176,6 +180,7 @@
                   type="text"
                   class="form-control lockable"
                   th:field="*{invoiceRequestNo}"
+                  th:readonly="${isEdit and session.loggedInRole != 'ADMIN' and session.loggedInRole != 'MGN'}"
                 />
               </div>
               <div class="col-md-3">
@@ -185,6 +190,7 @@
                   step="1"
                   class="form-control lockable"
                   th:field="*{actualReceived}"
+                  th:readonly="${isEdit and session.loggedInRole != 'ADMIN' and session.loggedInRole != 'MGN'}"
                 />
               </div>
               <div class="col-md-6"></div>
@@ -194,6 +200,7 @@
                   type="date"
                   class="form-control lockable"
                   th:field="*{receiptDate}"
+                  th:readonly="${isEdit and session.loggedInRole != 'ADMIN' and session.loggedInRole != 'MGN'}"
                 />
               </div>
               <div class="col-md-3">
@@ -202,11 +209,16 @@
                   type="date"
                   class="form-control lockable"
                   th:field="*{paymentReceivedDate}"
+                  th:readonly="${isEdit and session.loggedInRole != 'ADMIN' and session.loggedInRole != 'MGN'}"
                 />
               </div>
               <div class="col-md-1">
                 <label class="form-label fw-bold">已收款</label>
-                <select class="form-select lockable" th:field="*{isWithheld}">
+                <select
+                  class="form-select lockable"
+                  th:field="*{isWithheld}"
+                  th:style="${isEdit and session.loggedInRole != 'ADMIN' and session.loggedInRole != 'MGN' ? 'pointer-events: none; background-color: #f8f9fa;' : ''}"
+                >
                   <option value="否">否</option>
                   <option value="是">是</option>
                 </select>
@@ -219,6 +231,7 @@
                   type="date"
                   class="form-control lockable"
                   th:field="*{invoiceDate}"
+                  th:readonly="${isEdit and session.loggedInRole != 'ADMIN' and session.loggedInRole != 'MGN'}"
                 />
               </div>
 
@@ -228,6 +241,7 @@
                   type="text"
                   class="form-control lockable"
                   th:field="*{invoiceNo}"
+                  th:readonly="${isEdit and session.loggedInRole != 'ADMIN' and session.loggedInRole != 'MGN'}"
                 />
               </div>
               <!-- <div class="col-md-3">
@@ -245,6 +259,7 @@
                   class="form-control lockable"
                   th:field="*{invoiceNote}"
                   rows="1"
+                  th:readonly="${isEdit and session.loggedInRole != 'ADMIN' and session.loggedInRole != 'MGN'}"
                 ></textarea>
               </div>
             </div>
