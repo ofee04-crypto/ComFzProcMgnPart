@@ -76,7 +76,7 @@
           />
         </div>
         <div class="col-md-3">
-          <label class="form-label fw-bold">申請人</label>
+          <label class="form-label fw-bold">客戶名稱</label>
           <input
             type="text"
             class="form-control lockable"
@@ -445,6 +445,7 @@
         const hoursInput = document.getElementById("totalContractHours");
         const amountInput = document.getElementById("contractAmount");
         const eventInput = document.getElementById("caseFileNo");
+        const balanceAfterInput = document.getElementById("balanceAfter");
 
         let currentBalance = 0;
         let original = "";
@@ -501,27 +502,35 @@
           break;
         }
 
-        // 2. 從快取資料中安全取出當前合約餘額
+        // 2. 從快取資料中安全取出「欲續約合約」之前的累計餘額
         try {
           const contractsMap = JSON.parse(contractsJsonData);
           if (contractsMap[original]) {
             currentBalance =
               Math.round(parseFloat(contractsMap[original].contractBalance)) ||
               0;
-            // 同步隱藏欄位供計算使用
-            const cbInput = document.getElementById("contractBalance");
-            if (cbInput) cbInput.value = currentBalance;
           }
-          // 3. 加總計算：合約總額 = 合約單價 + 歷史合約餘額
+          // 3. 關鍵修正：新合約預算 = 新單價 + 舊合約剩餘，並設為「起始可用餘額」
+
           if (priceInput && amountInput) {
             const price = parseFloat(priceInput.value) || 0;
-            amountInput.value = price + currentBalance;
+            const newTotal = price + currentBalance;
+            amountInput.value = newTotal;
+
+            const cbInput = document.getElementById("contractBalance");
+            if (cbInput) cbInput.value = newTotal;
           }
         } catch (e) {
           console.error("續約解析餘額失敗", e);
         }
 
-        // 清空 憑證相關欄位
+        calculateAllFees(); // 最後再重新計算一遍，確保結餘欄位刷新為合約原額
+
+        if (balanceAfterInput) {
+          balanceAfterInput.value = amountInput.value;
+        }
+
+        // 清空 憑證相關與費用相關欄位，確保結餘能對應到新的合約原額
         const clearIds = [
           "invoiceRequestNo",
           "actualReceived",
@@ -529,6 +538,11 @@
           "paymentReceivedDate",
           "invoiceDate",
           "invoiceNo",
+          "actualHours",
+          "hoursFee",
+          "eventFee",
+          "totalFee",
+          "totalInNtd",
         ];
         clearIds.forEach((id) => {
           const el = document.getElementById(id);
@@ -538,10 +552,10 @@
         const withheldSelect = document.getElementById("isWithheld");
         if (withheldSelect) withheldSelect.value = "否";
 
-        calculateAllFees();
         if (eventInput) {
           eventInput.value = "MainCase"; // 套用合約母案預設代碼
         }
+
         // 4. 自動打開「合約憑證」收合區塊 (僅在收合時點擊)
         document
           .querySelector('[data-bs-target="#receiptsSection"].collapsed')
@@ -648,6 +662,7 @@
           document.getElementById("totalInNtd").value =
             Math.round(totalFeeVal * exchangeRate * 100) / 100;
         }
+        console.log(balanceAfterInput.value);
       }
 
       document.addEventListener("DOMContentLoaded", function () {
