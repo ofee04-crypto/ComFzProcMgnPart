@@ -13,7 +13,9 @@
             <tr>
               <th class="text-center">操作</th>
               <th>合約編號</th>
+              <th>客戶名稱</th>
               <th>合約名稱</th>
+              <th>合約備註</th>
               <th class="text-end">關聯案件數</th>
               <th class="text-end">合約金額</th>
               <th class="text-end">合約餘額</th>
@@ -31,7 +33,9 @@
                 >
               </td>
               <td th:text="${stat.contractNo}"></td>
+              <td th:text="${stat.applicant}"></td>
               <td th:text="${stat.appName}"></td>
+              <td th:text="${stat.contractNotes}"></td>
               <td class="text-end" th:text="${stat.count}"></td>
               <td
                 class="text-end"
