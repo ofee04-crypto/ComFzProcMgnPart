@@ -77,6 +77,10 @@ public class PatentCase {
     private BigDecimal contractBalance; // 合約餘額 (暫存計算)
     private BigDecimal balanceAfter; // 結餘 (合約餘額 - 總費用)
 
+    private BigDecimal usedBonusHours = BigDecimal.ZERO; // 本案使用贈送時數
+    private BigDecimal bonusHoursBalance = BigDecimal.ZERO; // 贈送時數餘額 (本案後結餘)
+    private BigDecimal startingBonusHours = BigDecimal.ZERO; // 本案開始時可用贈送時數
+
     public PatentCase() {
     }
 
@@ -502,5 +506,29 @@ public class PatentCase {
 
     public void setBalanceAfter(BigDecimal balanceAfter) {
         this.balanceAfter = balanceAfter;
+    }
+
+    public BigDecimal getUsedBonusHours() {
+        return usedBonusHours;
+    }
+
+    public void setUsedBonusHours(BigDecimal usedBonusHours) {
+        this.usedBonusHours = usedBonusHours;
+    }
+
+    public BigDecimal getBonusHoursBalance() {
+        return bonusHoursBalance;
+    }
+
+    public void setBonusHoursBalance(BigDecimal bonusHoursBalance) {
+        this.bonusHoursBalance = bonusHoursBalance;
+    }
+
+    public BigDecimal getStartingBonusHours() {
+        return startingBonusHours;
+    }
+
+    public void setStartingBonusHours(BigDecimal startingBonusHours) {
+        this.startingBonusHours = startingBonusHours;
     }
 }

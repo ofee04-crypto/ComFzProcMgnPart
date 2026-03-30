@@ -361,6 +361,8 @@
             th:field="*{expectedHours}"
           />
         </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2"></div>
         <div class="col-md-2">
           <label class="form-label fw-bold text-primary">實際完成日</label>
           <input
@@ -381,6 +383,43 @@
           />
         </div>
         <div class="col-md-2">
+          <label class="form-label fw-bold text-primary">使用贈送時數</label>
+          <input
+            type="number"
+            step="1"
+            class="form-control lockable border-primary-subtle"
+            th:field="*{usedBonusHours}"
+            id="usedBonusHours"
+          />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label fw-bold text-success">贈送時數餘額</label>
+          <input
+            type="number"
+            step="1"
+            class="form-control lockable border-success-subtle"
+            th:field="*{bonusHoursBalance}"
+            id="bonusHoursBalance"
+            readonly
+            style="background-color: #f8f9fa"
+          />
+        </div>
+        <div class="col-md-2"></div>
+        <input
+          type="hidden"
+          th:field="*{startingBonusHours}"
+          id="startingBonusHours"
+        />
+        <div class="col-md-2">
+          <label class="form-label fw-bold">事件費用-NTD</label>
+          <input
+            type="number"
+            step="1"
+            class="form-control lockable"
+            th:field="*{eventFee}"
+          />
+        </div>
+        <div class="col-md-2">
           <label class="form-label fw-bold text-success"
             >時數費用-NTD(自動)</label
           >
@@ -391,16 +430,6 @@
             th:field="*{hoursFee}"
             readonly
             style="background-color: #f8f9fa"
-          />
-        </div>
-
-        <div class="col-md-2">
-          <label class="form-label fw-bold">事件費用-NTD</label>
-          <input
-            type="number"
-            step="1"
-            class="form-control lockable"
-            th:field="*{eventFee}"
           />
         </div>
 
@@ -552,6 +581,18 @@
           break;
         }
 
+        let newBonusHours = 0;
+        newBonusHours = window.prompt(
+          "請輸入新合約的贈送時數 (若無請輸0或直接確定)：",
+          "0",
+        );
+        if (newBonusHours !== null) {
+          const val = parseFloat(newBonusHours.trim()) || 0;
+          document.getElementById("startingBonusHours").value = val;
+          document.getElementById("bonusHoursBalance").value = val;
+          document.getElementById("usedBonusHours").value = 0;
+        }
+
         // 2. 從快取資料中量化取值
         try {
           if (contractsMap[original]) {
@@ -622,7 +663,7 @@
         const totalFeeInput = document.getElementById("totalFee");
         const totalInvoicedInput = document.getElementById("totalInvoiced");
 
-        // 1. 小時費用
+        // 1. 小時費用 與 贈送時數連動
         let hourlyRateVal = 0;
         if (amountStr && hoursStr) {
           const amount = parseFloat(amountStr);
@@ -637,16 +678,34 @@
           if (rateInput) rateInput.value = "";
         }
 
-        // 2. 時數費用 = 實際使用時數 * 小時費用
-        if (actHoursStr && rateInput && rateInput.value) {
-          const actualHrs = parseFloat(actHoursStr);
-          if (!isNaN(actualHrs)) {
-            const hoursFeeVal =
-              Math.round(actualHrs * hourlyRateVal * 100) / 100;
-            if (hoursFeeInput) hoursFeeInput.value = hoursFeeVal;
-          } else {
-            if (hoursFeeInput) hoursFeeInput.value = "";
-          }
+        // 1.1 贈送時數自動限制與餘額計算
+        const startBonus =
+          parseFloat(document.getElementById("startingBonusHours")?.value) || 0;
+        const usedBonusInput = document.getElementById("usedBonusHours");
+        const bonusBalanceInput = document.getElementById("bonusHoursBalance");
+        const actualHrs = parseFloat(actHoursStr) || 0;
+
+        let usedBonus = parseFloat(usedBonusInput?.value) || 0;
+        // 自動限制在最大值 (不可超過初始可用量，也不可超過實際花費時數)
+        const maxBonus = Math.min(startBonus, actualHrs);
+        if (usedBonus > maxBonus) {
+          usedBonus = maxBonus;
+          if (usedBonusInput) usedBonusInput.value = usedBonus;
+        }
+        if (usedBonus < 0) {
+          usedBonus = 0;
+          if (usedBonusInput) usedBonusInput.value = 0;
+        }
+        if (bonusBalanceInput) {
+          bonusBalanceInput.value = Math.max(0, startBonus - usedBonus);
+        }
+
+        // 2. 時數費用 = (實際使用時數 - 使用贈送時數) * 小時費用
+        if (rateInput && rateInput.value) {
+          const billableHours = Math.max(0, actualHrs - usedBonus);
+          const hoursFeeVal =
+            Math.round(billableHours * hourlyRateVal * 100) / 100;
+          if (hoursFeeInput) hoursFeeInput.value = hoursFeeVal;
         } else {
           if (hoursFeeInput) hoursFeeInput.value = "";
         }
@@ -728,11 +787,30 @@
           "customFee",
           "taxRate",
           "exchangeRate",
+          "usedBonusHours",
         ];
         inputs.forEach((id) => {
           const el = document.getElementById(id);
           if (el) el.addEventListener("input", calculateAllFees);
         });
+
+        // 提交表單前自動在任務備註末尾增加贈送時數資訊
+        const form = document.getElementById("caseForm");
+        if (form) {
+          form.addEventListener("submit", function () {
+            const usedBonusVal = document.getElementById("usedBonusHours")?.value;
+            const usedBonus = parseFloat(usedBonusVal) || 0;
+            const notesObj = document.getElementById("notes");
+            
+            if (usedBonus > 0 && notesObj) {
+              const tag = "**使用贈送時數";
+              if (!notesObj.value.includes(tag)) {
+                  notesObj.value = (notesObj.value ? notesObj.value.trim() + "\n" : "") + tag;
+                  console.log("Bonus usage tag added:", tag);
+              }
+            }
+          });
+        }
 
         // 新增案件時：建立可查詢的滾動下拉選單與自動代入邏輯
         if (!isEdit && contractsJsonData && contractsJsonData !== "{}") {
@@ -766,12 +844,25 @@
                   const formattedBalance = Math.round(
                     data.contractBalance,
                   ).toLocaleString();
+                  const bonusRem = data.bonusHoursBalance || 0;
                   balanceEl.innerText =
-                    "💰 合約餘額: " + formattedBalance + " 元";
+                    "💰 餘額: " +
+                    formattedBalance +
+                    " 元 | 🎁 贈送時數: " +
+                    bonusRem +
+                    " hrs";
                   balanceEl.style.display = "inline-block"; // 顯示金額
 
                   const cbInput = document.getElementById("contractBalance");
                   if (cbInput) cbInput.value = data.contractBalance || 0;
+
+                  const sbInput = document.getElementById("startingBonusHours");
+                  if (sbInput) {
+                    sbInput.value = bonusRem;
+                    // 如果是新案件，預設將剩餘時數填入顯示
+                    document.getElementById("bonusHoursBalance").value =
+                      bonusRem;
+                  }
                 }
                 if (document.getElementById("appName") && data.appName)
                   document.getElementById("appName").value = data.appName;

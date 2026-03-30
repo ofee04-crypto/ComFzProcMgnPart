@@ -136,10 +136,14 @@ public class PatentCaseController {
             patentCase.setHourlyRate(hourlyRate);
         }
 
-        // Auto-calculate hoursFee: actualHours * hourlyRate
+        // Auto-calculate hoursFee: (actualHours - usedBonusHours) * hourlyRate
         java.math.BigDecimal hoursFee = java.math.BigDecimal.ZERO;
         if (patentCase.getActualHours() != null && hourlyRate != null) {
-            hoursFee = patentCase.getActualHours().multiply(hourlyRate);
+            java.math.BigDecimal usedBonus = patentCase.getUsedBonusHours() != null ? patentCase.getUsedBonusHours() : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal billableHours = patentCase.getActualHours().subtract(usedBonus);
+            if (billableHours.compareTo(java.math.BigDecimal.ZERO) < 0) billableHours = java.math.BigDecimal.ZERO;
+            
+            hoursFee = billableHours.multiply(hourlyRate);
             patentCase.setHoursFee(hoursFee);
         } else {
             patentCase.setHoursFee(null);
