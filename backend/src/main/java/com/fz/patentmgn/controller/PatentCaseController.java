@@ -5,6 +5,8 @@ import com.fz.patentmgn.service.ExcelExportService;
 import com.fz.patentmgn.service.LogService;
 import com.fz.patentmgn.service.PatentCaseService;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -212,7 +214,16 @@ public class PatentCaseController {
 
     @GetMapping("/grouped")
     public String groupedOverview(Model model, HttpSession session) {
-        model.addAttribute("groupedStats", service.getOverviewGroupedByName());
+        List<Map<String, Object>> stats = service.getOverviewGroupedByName();
+        // 依合約編號排序 (contractNo)
+        stats.sort((a, b) -> {
+            String c1 = (String) a.get("contractNo");
+            String c2 = (String) b.get("contractNo");
+            if (c1 == null) return -1;
+            if (c2 == null) return 1;
+            return c1.compareTo(c2);
+        });
+        model.addAttribute("groupedStats", stats);
         model.addAttribute("username", session.getAttribute("loggedInUser"));
         return "grouped";
     }
