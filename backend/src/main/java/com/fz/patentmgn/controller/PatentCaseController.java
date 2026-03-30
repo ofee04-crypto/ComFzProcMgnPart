@@ -19,6 +19,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import java.io.File;
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/")
@@ -28,6 +32,9 @@ public class PatentCaseController {
     private final LogService logService;
     private final ExcelExportService excelExportService;
     private final com.fasterxml.jackson.databind.ObjectMapper objectMapper;
+
+    @Value("${patent.data.file:data/patent_cases.json}")
+    private String dataFilePath;
 
     @Autowired
     private ApplicationContext context;
@@ -233,6 +240,24 @@ public class PatentCaseController {
         model.addAttribute("logs", logService.getAllLogs());
         model.addAttribute("username", session.getAttribute("loggedInUser"));
         return "logs";
+    }
+
+    @GetMapping("/backup")
+    public ResponseEntity<Resource> downloadBackup() {
+        try {
+            File file = new File(dataFilePath);
+            if (!file.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+            Resource resource = new InputStreamResource(new java.io.FileInputStream(file));
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"patent_cases_backup.json\"")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentLength(file.length())
+                    .body(resource);
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PostMapping("/api/system/shutdown")
