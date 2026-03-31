@@ -137,7 +137,11 @@
           th:field="*{contractBalance}"
           id="contractBalance"
         />
-        <!-- 隱藏欄位儲存初始餘額 -->
+        <!-- 隱藏欄位：編輯模式下的原始數據 -->
+        <input type="hidden" id="isEditFlag" th:value="${isEdit != null ? isEdit : false}" />
+        <input type="hidden" id="originalTotalFee" th:value="${patentCase.totalFee != null ? patentCase.totalFee : 0}" />
+        <input type="hidden" id="originalBalanceAfter" th:value="${patentCase.balanceAfter != null ? patentCase.balanceAfter : 0}" />
+        <!-- 隱藏欄位結束 -->
         <div class="col-md-2">
           <label class="form-label fw-bold text-success"
             >小時費用-NTD(自動)</label
@@ -722,13 +726,22 @@
           totalFeeInput.value = Math.round(totalFeeVal * 100) / 100;
         }
 
-        // 3.1.1 結餘 = 合約餘額 - 總費用
-        const startBalance =
-          parseFloat(document.getElementById("contractBalance")?.value) || 0;
+        // 3.1.1 結餘 = 合約餘額 - 總費用 (或者是：舊結餘 - (新費用 - 舊費用))
+        const isEditFlag = document.getElementById("isEditFlag")?.value === "true";
         const balanceAfterInput = document.getElementById("balanceAfter");
+
         if (balanceAfterInput) {
-          balanceAfterInput.value =
-            Math.round((startBalance - totalFeeVal) * 100) / 100;
+            if (isEditFlag) {
+                // 編輯模式：使用原始結餘及費用變動來計算新結餘
+                const origFee = parseFloat(document.getElementById("originalTotalFee")?.value) || 0;
+                const origBal = parseFloat(document.getElementById("originalBalanceAfter")?.value) || 0;
+                const feeDiff = totalFeeVal - origFee;
+                balanceAfterInput.value = Math.round((origBal - feeDiff) * 100) / 100;
+            } else {
+                // 新增模式：使用基礎合約餘額減去當前總費用
+                const startBalance = parseFloat(document.getElementById("contractBalance")?.value) || 0;
+                balanceAfterInput.value = Math.round((startBalance - totalFeeVal) * 100) / 100;
+            }
         }
         // 3.2 收費合計 = 服務費 + 超頁費 + 超項費 + 自定義費
 

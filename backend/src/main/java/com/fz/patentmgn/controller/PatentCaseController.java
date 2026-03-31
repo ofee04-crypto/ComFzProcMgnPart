@@ -175,12 +175,33 @@ public class PatentCaseController {
             patentCase.setTotalFee(null);
         }
 
-        // Auto-calculate balanceAfter: contractBalance - totalFee
-        if (patentCase.getContractBalance() != null) {
-            java.math.BigDecimal feeToSubtract = (patentCase.getTotalFee() != null) ? patentCase.getTotalFee() : java.math.BigDecimal.ZERO;
-            patentCase.setBalanceAfter(patentCase.getContractBalance().subtract(feeToSubtract));
+        // Auto-calculate balanceAfter
+        if (isNew) {
+            if (patentCase.getContractBalance() != null) {
+                java.math.BigDecimal feeToSubtract = (patentCase.getTotalFee() != null) ? patentCase.getTotalFee() : java.math.BigDecimal.ZERO;
+                patentCase.setBalanceAfter(patentCase.getContractBalance().subtract(feeToSubtract));
+            } else {
+                patentCase.setBalanceAfter(null);
+            }
         } else {
-            patentCase.setBalanceAfter(null);
+            // Edit Mode: 新結餘 = 舊結餘 - (新總費 - 舊總費)
+            try {
+                PatentCase oldCase = service.getCaseByEventNo(patentCase.getEventNo());
+                java.math.BigDecimal oldFee = (oldCase.getTotalFee() != null) ? oldCase.getTotalFee() : java.math.BigDecimal.ZERO;
+                java.math.BigDecimal newFee = (patentCase.getTotalFee() != null) ? patentCase.getTotalFee() : java.math.BigDecimal.ZERO;
+                java.math.BigDecimal feeDiff = newFee.subtract(oldFee);
+                
+                java.math.BigDecimal oldBalanceAfter = (oldCase.getBalanceAfter() != null) ? oldCase.getBalanceAfter() : java.math.BigDecimal.ZERO;
+                patentCase.setBalanceAfter(oldBalanceAfter.subtract(feeDiff));
+            } catch (Exception e) {
+                // Fallback如果撈不到舊檔案（理論上不會發生）
+                if (patentCase.getContractBalance() != null) {
+                    java.math.BigDecimal feeToSubtract = (patentCase.getTotalFee() != null) ? patentCase.getTotalFee() : java.math.BigDecimal.ZERO;
+                    patentCase.setBalanceAfter(patentCase.getContractBalance().subtract(feeToSubtract));
+                } else {
+                    patentCase.setBalanceAfter(null);
+                }
+            }
         }
 
         service.saveCase(patentCase);
